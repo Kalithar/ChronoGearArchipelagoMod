@@ -1,0 +1,31 @@
+{
+	"dependencies": [],
+	"description": "Archipelago Client integration for Chrono Gear. Required to play Chrono Gear as part of the Archipelago Multiworld Randomizer.",
+	"extra": {
+		"godot": {
+			"authors": [
+				"Kalithar"
+			],
+			"compatible_game_version": [
+				"0.0.0",
+				"1.0.27"
+			],
+			"compatible_mod_loader_version": [
+				"7.0.0"
+			],
+			"config_schema": {
+
+			},
+			"description_rich": "",
+			"image": null,
+			"incompatibilities": [],
+			"load_before": [],
+			"optional_dependencies": [],
+			"tags": []
+		}
+	},
+	"name": "Archipelago",
+	"namespace": "Kalithar",
+	"version_number": "0.0.1",
+	"website_url": "https://github.com/exampleauthor/examplemod"
+}

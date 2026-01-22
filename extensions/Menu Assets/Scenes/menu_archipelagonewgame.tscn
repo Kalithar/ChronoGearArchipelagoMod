@@ -1,0 +1,402 @@
+[gd_scene load_steps=14 format=3 uid="uid://8qsf8nieylid"]
+
+[ext_resource type="Script" uid="uid://hl7oxd7t7q47" path="res://mods-unpacked/Kalithar-Archipelago/extensions/Menu Assets/Scenes/menu_archipelagonewgame.gd" id="1_6pbtf"]
+[ext_resource type="PackedScene" uid="uid://doft5my8pf2xn" path="res://Menu Assets/Scenes/menu_difficulty.tscn" id="2_qs7an"]
+[ext_resource type="Texture2D" uid="uid://d30t2dojevspk" path="res://Global Assets/Sprites/HUD/hud_menu.png" id="3_co550"]
+[ext_resource type="FontFile" uid="uid://dwi8gea14desm" path="res://Global Assets/Sprites/HUD/ChicagoFLF.ttf" id="4_614ck"]
+[ext_resource type="Script" uid="uid://dxlv6ixi1yjvi" path="res://Global Assets/Scripts/UI/MenuOptionNew.gd" id="5_6rigs"]
+[ext_resource type="Script" uid="uid://cgtkkkaon7p7l" path="res://mods-unpacked/Kalithar-Archipelago/extensions/Global Assets/Scripts/UI/MenuOptionArchipelago.gd" id="6_xqcct"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_6wt6j"]
+font = ExtResource("4_614ck")
+font_size = 12
+outline_size = 4
+outline_color = Color(0, 0.376471, 0.792157, 1)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ax2r8"]
+atlas = ExtResource("3_co550")
+region = Rect2(121, 74, 11, 11)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_m72yc"]
+atlas = ExtResource("3_co550")
+region = Rect2(139, 71, 12, 12)
+
+[sub_resource type="LabelSettings" id="LabelSettings_l0f12"]
+font = ExtResource("4_614ck")
+font_size = 12
+outline_size = 4
+outline_color = Color(0, 0.376471, 0.792157, 1)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_undmm"]
+atlas = ExtResource("3_co550")
+region = Rect2(121, 74, 11, 11)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_n8rx0"]
+atlas = ExtResource("3_co550")
+region = Rect2(139, 71, 12, 12)
+
+[sub_resource type="LabelSettings" id="LabelSettings_uq0vv"]
+font = ExtResource("4_614ck")
+font_size = 12
+outline_size = 4
+outline_color = Color(0, 0.376471, 0.792157, 1)
+
+[node name="MenuArchipelagoNewGameOptions" type="TextureRect" node_paths=PackedStringArray("cursor", "visibility")]
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_6pbtf")
+DiffMenu = ExtResource("2_qs7an")
+enable_cursor_smoothing = true
+cursor_offset = Vector2(-4, 1)
+cursor_custom_width = 293
+hint_enabled = false
+cursor = NodePath("Visibility/Cursor")
+visibility = NodePath("Visibility")
+
+[node name="Visibility" type="Control" parent="."]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+mouse_filter = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="Visibility"]
+layout_mode = 0
+offset_right = 480.0
+offset_bottom = 360.0
+
+[node name="CenterContainer" type="CenterContainer" parent="Visibility/MarginContainer"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Visibility/MarginContainer/CenterContainer"]
+layout_mode = 2
+
+[node name="Spacer" type="MarginContainer" parent="Visibility/MarginContainer/CenterContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 16)
+layout_mode = 2
+
+[node name="LabelPanel" type="NinePatchRect" parent="Visibility/MarginContainer/CenterContainer/VBoxContainer"]
+custom_minimum_size = Vector2(192, 41)
+layout_mode = 2
+size_flags_horizontal = 4
+region_rect = Rect2(12, 12, 88, 88)
+patch_margin_left = 27
+patch_margin_top = 13
+patch_margin_right = 27
+patch_margin_bottom = 13
+
+[node name="Spacer2" type="MarginContainer" parent="Visibility/MarginContainer/CenterContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 111)
+layout_mode = 2
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="Visibility/MarginContainer/CenterContainer/VBoxContainer"]
+layout_mode = 2
+alignment = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="Visibility/MarginContainer/CenterContainer/VBoxContainer/VBoxContainer2"]
+layout_mode = 2
+
+[node name="OptionPanel" type="NinePatchRect" parent="Visibility/MarginContainer/CenterContainer/VBoxContainer/VBoxContainer2/MarginContainer"]
+layout_mode = 2
+texture = ExtResource("3_co550")
+region_rect = Rect2(12, 12, 88, 88)
+patch_margin_left = 27
+patch_margin_top = 13
+patch_margin_right = 27
+patch_margin_bottom = 13
+
+[node name="CenterContainer" type="CenterContainer" parent="Visibility/MarginContainer/CenterContainer/VBoxContainer/VBoxContainer2/MarginContainer"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="Visibility/MarginContainer/CenterContainer/VBoxContainer/VBoxContainer2/MarginContainer/CenterContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 11
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 13
+
+[node name="Options1" type="VBoxContainer" parent="Visibility/MarginContainer/CenterContainer/VBoxContainer/VBoxContainer2/MarginContainer/CenterContainer/MarginContainer"]
+unique_name_in_owner = true
+z_index = 1
+custom_minimum_size = Vector2(256, 0)
+layout_mode = 2
+
+[node name="Difficulty" type="Label" parent="Visibility/MarginContainer/CenterContainer/VBoxContainer/VBoxContainer2/MarginContainer/CenterContainer/MarginContainer/Options1"]
+layout_mode = 2
+focus_neighbor_bottom = NodePath("../Tutorial")
+focus_next = NodePath("../Tutorial")
+focus_mode = 2
+mouse_filter = 1
+theme_override_fonts/font = ExtResource("4_614ck")
+theme_override_font_sizes/font_size = 12
+text = "Difficulty"
+label_settings = SubResource("LabelSettings_6wt6j")
+script = ExtResource("5_6rigs")
+call_type = 5
+call_on_selection = "ShowDifficulty"
+
+[node name="DifficultyLabel" type="Label" parent="Visibility/MarginContainer/CenterContainer/VBoxContainer/VBoxContainer2/MarginContainer/CenterContainer/MarginContainer/Options1/Difficulty"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 160.0
+offset_top = -1.0
+offset_right = 260.0
+offset_bottom = 17.0
+mouse_filter = 1
+theme_override_fonts/font = ExtResource("4_614ck")
+theme_override_font_sizes/font_size = 12
+text = "Brave"
+label_settings = SubResource("LabelSettings_6wt6j")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Tutorial" type="Label" parent="Visibility/MarginContainer/CenterContainer/VBoxContainer/VBoxContainer2/MarginContainer/CenterContainer/MarginContainer/Options1"]
+layout_mode = 2
+focus_neighbor_top = NodePath("../Difficulty")
+focus_neighbor_bottom = NodePath("../Speedrun")
+focus_next = NodePath("../Speedrun")
+focus_previous = NodePath("../Difficulty")
+focus_mode = 2
+mouse_filter = 1
+theme_override_fonts/font = ExtResource("4_614ck")
+theme_override_font_sizes/font_size = 12
+text = "Play Tutorial"
+label_settings = SubResource("LabelSettings_6wt6j")
+vertical_alignment = 1
+script = ExtResource("5_6rigs")
+call_type = 5
+call_on_selection = "ToggleTutorial"
+
+[node name="TutorialLabel" type="Label" parent="Visibility/MarginContainer/CenterContainer/VBoxContainer/VBoxContainer2/MarginContainer/CenterContainer/MarginContainer/Options1/Tutorial"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 212.0
+offset_top = -1.0
+offset_right = 260.0
+offset_bottom = 17.0
+theme_override_fonts/font = ExtResource("4_614ck")
+theme_override_font_sizes/font_size = 12
+text = "Yes"
+label_settings = SubResource("LabelSettings_6wt6j")
+vertical_alignment = 1
+
+[node name="Box" type="TextureRect" parent="Visibility/MarginContainer/CenterContainer/VBoxContainer/VBoxContainer2/MarginContainer/CenterContainer/MarginContainer/Options1/Tutorial"]
+layout_mode = 0
+offset_left = 197.0
+offset_top = 2.0
+offset_right = 208.0
+offset_bottom = 13.0
+texture = SubResource("AtlasTexture_ax2r8")
+
+[node name="TutorialCheck" type="TextureRect" parent="Visibility/MarginContainer/CenterContainer/VBoxContainer/VBoxContainer2/MarginContainer/CenterContainer/MarginContainer/Options1/Tutorial"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 197.0
+offset_top = -1.0
+offset_right = 209.0
+offset_bottom = 11.0
+texture = SubResource("AtlasTexture_m72yc")
+
+[node name="Speedrun" type="Label" parent="Visibility/MarginContainer/CenterContainer/VBoxContainer/VBoxContainer2/MarginContainer/CenterContainer/MarginContainer/Options1" node_paths=PackedStringArray("Check")]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+focus_neighbor_top = NodePath("../Tutorial")
+focus_neighbor_bottom = NodePath("../Archipelago")
+focus_next = NodePath("../Archipelago")
+focus_previous = NodePath("../Tutorial")
+focus_mode = 2
+mouse_filter = 1
+theme_override_fonts/font = ExtResource("4_614ck")
+theme_override_font_sizes/font_size = 12
+text = "Speedrun"
+label_settings = SubResource("LabelSettings_l0f12")
+vertical_alignment = 1
+script = ExtResource("5_6rigs")
+enabled = false
+call_type = 5
+call_on_selection = "ToggleSpeedrun"
+Check = NodePath("SpeedrunCheck")
+
+[node name="SpeedrunLabel" type="Label" parent="Visibility/MarginContainer/CenterContainer/VBoxContainer/VBoxContainer2/MarginContainer/CenterContainer/MarginContainer/Options1/Speedrun"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 212.0
+offset_top = -1.0
+offset_right = 260.0
+offset_bottom = 17.0
+mouse_filter = 1
+theme_override_fonts/font = ExtResource("4_614ck")
+theme_override_font_sizes/font_size = 12
+text = "Yes"
+label_settings = SubResource("LabelSettings_l0f12")
+vertical_alignment = 1
+
+[node name="Box" type="TextureRect" parent="Visibility/MarginContainer/CenterContainer/VBoxContainer/VBoxContainer2/MarginContainer/CenterContainer/MarginContainer/Options1/Speedrun"]
+layout_mode = 0
+offset_left = 197.0
+offset_top = 2.0
+offset_right = 208.0
+offset_bottom = 13.0
+texture = SubResource("AtlasTexture_undmm")
+
+[node name="SpeedrunCheck" type="TextureRect" parent="Visibility/MarginContainer/CenterContainer/VBoxContainer/VBoxContainer2/MarginContainer/CenterContainer/MarginContainer/Options1/Speedrun"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 197.0
+offset_top = -1.0
+offset_right = 209.0
+offset_bottom = 11.0
+texture = SubResource("AtlasTexture_n8rx0")
+
+[node name="Archipelago" type="Label" parent="Visibility/MarginContainer/CenterContainer/VBoxContainer/VBoxContainer2/MarginContainer/CenterContainer/MarginContainer/Options1"]
+layout_mode = 2
+focus_neighbor_top = NodePath("../Speedrun")
+focus_neighbor_bottom = NodePath("../../../../../../VBoxContainer3/MarginContainer2/CenterContainer/MarginContainer/Options2/Confirm")
+focus_next = NodePath("../../../../../../VBoxContainer3/MarginContainer2/CenterContainer/MarginContainer/Options2/Confirm")
+focus_previous = NodePath("../Speedrun")
+focus_mode = 2
+mouse_filter = 1
+theme_override_fonts/font = ExtResource("4_614ck")
+theme_override_font_sizes/font_size = 12
+text = "Enable Archipelago"
+label_settings = SubResource("LabelSettings_6wt6j")
+vertical_alignment = 1
+script = ExtResource("6_xqcct")
+call_type = 5
+call_on_selection = "ToggleArchipelago"
+
+[node name="ArchipelagoLabel" type="Label" parent="Visibility/MarginContainer/CenterContainer/VBoxContainer/VBoxContainer2/MarginContainer/CenterContainer/MarginContainer/Options1/Archipelago"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 212.0
+offset_top = -1.0
+offset_right = 260.0
+offset_bottom = 17.0
+theme_override_fonts/font = ExtResource("4_614ck")
+theme_override_font_sizes/font_size = 12
+text = "No"
+label_settings = SubResource("LabelSettings_6wt6j")
+vertical_alignment = 1
+
+[node name="Box" type="TextureRect" parent="Visibility/MarginContainer/CenterContainer/VBoxContainer/VBoxContainer2/MarginContainer/CenterContainer/MarginContainer/Options1/Archipelago"]
+layout_mode = 0
+offset_left = 197.0
+offset_top = 2.0
+offset_right = 208.0
+offset_bottom = 13.0
+texture = SubResource("AtlasTexture_ax2r8")
+
+[node name="ArchipelagoCheck" type="TextureRect" parent="Visibility/MarginContainer/CenterContainer/VBoxContainer/VBoxContainer2/MarginContainer/CenterContainer/MarginContainer/Options1/Archipelago"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+offset_left = 197.0
+offset_top = -1.0
+offset_right = 209.0
+offset_bottom = 11.0
+texture = SubResource("AtlasTexture_m72yc")
+
+[node name="Spacer3" type="MarginContainer" parent="Visibility/MarginContainer/CenterContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+
+[node name="VBoxContainer3" type="VBoxContainer" parent="Visibility/MarginContainer/CenterContainer/VBoxContainer"]
+layout_mode = 2
+alignment = 2
+
+[node name="MarginContainer2" type="MarginContainer" parent="Visibility/MarginContainer/CenterContainer/VBoxContainer/VBoxContainer3"]
+layout_mode = 2
+
+[node name="OptionPanel" type="NinePatchRect" parent="Visibility/MarginContainer/CenterContainer/VBoxContainer/VBoxContainer3/MarginContainer2"]
+layout_mode = 2
+texture = ExtResource("3_co550")
+region_rect = Rect2(12, 12, 88, 88)
+patch_margin_left = 27
+patch_margin_top = 13
+patch_margin_right = 27
+patch_margin_bottom = 13
+
+[node name="CenterContainer" type="CenterContainer" parent="Visibility/MarginContainer/CenterContainer/VBoxContainer/VBoxContainer3/MarginContainer2"]
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="MarginContainer" type="MarginContainer" parent="Visibility/MarginContainer/CenterContainer/VBoxContainer/VBoxContainer3/MarginContainer2/CenterContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 10
+
+[node name="Options2" type="VBoxContainer" parent="Visibility/MarginContainer/CenterContainer/VBoxContainer/VBoxContainer3/MarginContainer2/CenterContainer/MarginContainer"]
+unique_name_in_owner = true
+z_index = 1
+custom_minimum_size = Vector2(255, 0)
+layout_mode = 2
+
+[node name="Confirm" type="Label" parent="Visibility/MarginContainer/CenterContainer/VBoxContainer/VBoxContainer3/MarginContainer2/CenterContainer/MarginContainer/Options2"]
+layout_mode = 2
+focus_neighbor_top = NodePath("../../../../../../VBoxContainer2/MarginContainer/CenterContainer/MarginContainer/Options1/Archipelago")
+focus_neighbor_bottom = NodePath("../Return")
+focus_next = NodePath("../Return")
+focus_previous = NodePath("../../../../../../VBoxContainer2/MarginContainer/CenterContainer/MarginContainer/Options1/Archipelago")
+focus_mode = 2
+mouse_filter = 1
+theme_override_fonts/font = ExtResource("4_614ck")
+theme_override_font_sizes/font_size = 12
+text = "Confirm"
+label_settings = SubResource("LabelSettings_uq0vv")
+horizontal_alignment = 1
+vertical_alignment = 1
+script = ExtResource("5_6rigs")
+call_type = 5
+call_on_selection = "NewGame"
+
+[node name="Return" type="Label" parent="Visibility/MarginContainer/CenterContainer/VBoxContainer/VBoxContainer3/MarginContainer2/CenterContainer/MarginContainer/Options2"]
+layout_mode = 2
+focus_neighbor_top = NodePath("../Confirm")
+focus_previous = NodePath("../Confirm")
+focus_mode = 2
+mouse_filter = 1
+theme_override_fonts/font = ExtResource("4_614ck")
+theme_override_font_sizes/font_size = 12
+text = "Return"
+label_settings = SubResource("LabelSettings_uq0vv")
+horizontal_alignment = 1
+vertical_alignment = 1
+script = ExtResource("5_6rigs")
+call_type = 1
+
+[node name="Spacer4" type="MarginContainer" parent="Visibility/MarginContainer/CenterContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
+
+[node name="LabelPanel" type="NinePatchRect" parent="Visibility"]
+layout_mode = 0
+offset_left = 144.0
+offset_top = 16.0
+offset_right = 336.0
+offset_bottom = 57.0
+region_rect = Rect2(12, 12, 88, 88)
+patch_margin_left = 27
+patch_margin_top = 13
+patch_margin_right = 27
+patch_margin_bottom = 13
+
+[node name="Cursor" type="NinePatchRect" parent="Visibility"]
+layout_mode = 0
+offset_left = 93.0
+offset_top = 186.0
+offset_right = 387.0
+offset_bottom = 201.0
+texture = ExtResource("3_co550")
+region_rect = Rect2(121, 13, 24, 15)
+patch_margin_left = 11
+patch_margin_right = 11
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+
+[node name="Audio" type="AudioStreamPlayer" parent="."]
+bus = &"Sfx"
+
+[node name="Confirm" type="AudioStreamPlayer" parent="."]
+bus = &"Sfx"

@@ -1,0 +1,336 @@
+[gd_scene load_steps=12 format=3 uid="uid://d3r7h3pvwm627"]
+
+[ext_resource type="Script" uid="uid://jf1t1hc84b8d" path="res://mods-unpacked/Kalithar-Archipelago/extensions/Menu Assets/Scenes/menu_archipelagosettings.gd" id="1_7xvyn"]
+[ext_resource type="Texture2D" uid="uid://d30t2dojevspk" path="res://Global Assets/Sprites/HUD/hud_menu.png" id="1_hy5co"]
+[ext_resource type="FontFile" uid="uid://dwi8gea14desm" path="res://Global Assets/Sprites/HUD/ChicagoFLF.ttf" id="2_7xvyn"]
+[ext_resource type="AudioStream" uid="uid://cnn3i27dv8aj5" path="res://Global Assets/Sounds/menu_scroll.wav" id="2_flu1d"]
+[ext_resource type="Script" uid="uid://dxlv6ixi1yjvi" path="res://Global Assets/Scripts/UI/MenuOptionNew.gd" id="3_3vub5"]
+[ext_resource type="AudioStream" uid="uid://bgdf1xu1lwygy" path="res://Global Assets/Sounds/menu_confirm.wav" id="3_tvhm6"]
+[ext_resource type="AudioStream" uid="uid://bpx1qujf6qoww" path="res://Global Assets/Sounds/menu_deny.wav" id="4_iofcc"]
+[ext_resource type="Script" uid="uid://cgtkkkaon7p7l" path="res://mods-unpacked/Kalithar-Archipelago/extensions/Global Assets/Scripts/UI/MenuOptionArchipelago.gd" id="8_flu1d"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_6gmuv"]
+font = ExtResource("2_7xvyn")
+font_size = 24
+outline_size = 5
+outline_color = Color(0, 0.376471, 0.792157, 1)
+shadow_size = 4
+shadow_color = Color(0, 0.52549, 0.933333, 1)
+shadow_offset = Vector2(0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_iofcc"]
+font = ExtResource("2_7xvyn")
+font_size = 12
+outline_size = 4
+outline_color = Color(0, 0.376471, 0.792157, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_eo1cp"]
+font = ExtResource("2_7xvyn")
+font_size = 12
+outline_size = 4
+outline_color = Color(0, 0.376471, 0.792157, 1)
+
+[node name="MenuArchipelagoSettings" type="TextureRect" node_paths=PackedStringArray("option_tree", "description_tree", "cursor", "visibility")]
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_7xvyn")
+enable_cursor_smoothing = true
+sfx_scroll = ExtResource("2_flu1d")
+sfx_confirm = ExtResource("3_tvhm6")
+sfx_deny = ExtResource("4_iofcc")
+option_tree = NodePath("CanvasLayer/Visibility/MarginContainer/CenterContainer/VBoxContainer/MarginContainer2/CenterContainer/MarginContainer/Options")
+description_tree = NodePath("CanvasLayer/Visibility/MarginContainer/CenterContainer/VBoxContainer/MarginContainer3/CenterContainer/MarginContainer")
+cursor = NodePath("CanvasLayer/Visibility/Cursor")
+visibility = NodePath("CanvasLayer/Visibility")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Visibility" type="Control" parent="CanvasLayer"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+mouse_filter = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/Visibility"]
+layout_mode = 0
+offset_right = 480.0
+offset_bottom = 360.0
+
+[node name="CenterContainer" type="CenterContainer" parent="CanvasLayer/Visibility/MarginContainer"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/Visibility/MarginContainer/CenterContainer"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/Visibility/MarginContainer/CenterContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 2
+theme_override_constants/margin_left = 35
+theme_override_constants/margin_right = 35
+theme_override_constants/margin_bottom = 5
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/Visibility/MarginContainer/CenterContainer/VBoxContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/margin_top = -4
+theme_override_constants/margin_bottom = -7
+
+[node name="LabelPanel" type="NinePatchRect" parent="CanvasLayer/Visibility/MarginContainer/CenterContainer/VBoxContainer/MarginContainer/MarginContainer"]
+layout_mode = 2
+texture = ExtResource("1_hy5co")
+region_rect = Rect2(12, 12, 88, 88)
+patch_margin_left = 27
+patch_margin_top = 13
+patch_margin_right = 27
+patch_margin_bottom = 13
+
+[node name="Label" type="Label" parent="CanvasLayer/Visibility/MarginContainer/CenterContainer/VBoxContainer/MarginContainer"]
+layout_mode = 2
+text = "Archipelago Settings"
+label_settings = SubResource("LabelSettings_6gmuv")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="MarginContainer2" type="MarginContainer" parent="CanvasLayer/Visibility/MarginContainer/CenterContainer/VBoxContainer"]
+custom_minimum_size = Vector2(310, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_right = 4
+
+[node name="OptionPanel" type="NinePatchRect" parent="CanvasLayer/Visibility/MarginContainer/CenterContainer/VBoxContainer/MarginContainer2"]
+layout_mode = 2
+texture = ExtResource("1_hy5co")
+region_rect = Rect2(12, 12, 88, 88)
+patch_margin_left = 27
+patch_margin_top = 13
+patch_margin_right = 27
+patch_margin_bottom = 13
+
+[node name="CenterContainer" type="CenterContainer" parent="CanvasLayer/Visibility/MarginContainer/CenterContainer/VBoxContainer/MarginContainer2"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/Visibility/MarginContainer/CenterContainer/VBoxContainer/MarginContainer2/CenterContainer"]
+custom_minimum_size = Vector2(267, 0)
+layout_mode = 2
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_bottom = 10
+
+[node name="Options" type="VBoxContainer" parent="CanvasLayer/Visibility/MarginContainer/CenterContainer/VBoxContainer/MarginContainer2/CenterContainer/MarginContainer"]
+unique_name_in_owner = true
+z_index = 1
+custom_minimum_size = Vector2(280, 0)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="ServerAddress" type="Label" parent="CanvasLayer/Visibility/MarginContainer/CenterContainer/VBoxContainer/MarginContainer2/CenterContainer/MarginContainer/Options"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_neighbor_bottom = NodePath("../SlotName")
+focus_next = NodePath("../SlotName")
+focus_mode = 2
+mouse_filter = 1
+theme_override_fonts/font = ExtResource("2_7xvyn")
+theme_override_font_sizes/font_size = 12
+text = "Server Address"
+label_settings = SubResource("LabelSettings_iofcc")
+vertical_alignment = 1
+script = ExtResource("3_3vub5")
+metadata/difficultyProperty = &"enemyLayout"
+
+[node name="ServerAddressBox" type="LineEdit" parent="CanvasLayer/Visibility/MarginContainer/CenterContainer/VBoxContainer/MarginContainer2/CenterContainer/MarginContainer/Options/ServerAddress"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(175, 0)
+layout_mode = 0
+offset_left = 110.0
+offset_top = -1.0
+offset_right = 285.0
+offset_bottom = 16.0
+placeholder_text = "archipelago.gg:11111"
+
+[node name="SlotName" type="Label" parent="CanvasLayer/Visibility/MarginContainer/CenterContainer/VBoxContainer/MarginContainer2/CenterContainer/MarginContainer/Options"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_neighbor_top = NodePath("../ServerAddress")
+focus_neighbor_bottom = NodePath("../PasswordButton")
+focus_next = NodePath("../PasswordButton")
+focus_previous = NodePath("../ServerAddress")
+focus_mode = 2
+mouse_filter = 1
+theme_override_fonts/font = ExtResource("2_7xvyn")
+theme_override_font_sizes/font_size = 12
+text = "Slot Name"
+label_settings = SubResource("LabelSettings_iofcc")
+vertical_alignment = 1
+script = ExtResource("3_3vub5")
+metadata/difficultyProperty = &"enemyLayout"
+
+[node name="SlotNameBox" type="LineEdit" parent="CanvasLayer/Visibility/MarginContainer/CenterContainer/VBoxContainer/MarginContainer2/CenterContainer/MarginContainer/Options/SlotName"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(175, 0)
+layout_mode = 0
+offset_left = 110.0
+offset_top = -1.0
+offset_right = 285.0
+offset_bottom = 16.0
+placeholder_text = "Player1"
+
+[node name="PasswordButton" type="Label" parent="CanvasLayer/Visibility/MarginContainer/CenterContainer/VBoxContainer/MarginContainer2/CenterContainer/MarginContainer/Options"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_neighbor_top = NodePath("../SlotName")
+focus_neighbor_bottom = NodePath("../ConnectButton")
+focus_next = NodePath("../ConnectButton")
+focus_previous = NodePath("../SlotName")
+focus_mode = 2
+mouse_filter = 1
+theme_override_fonts/font = ExtResource("2_7xvyn")
+theme_override_font_sizes/font_size = 12
+text = "Password"
+label_settings = SubResource("LabelSettings_iofcc")
+vertical_alignment = 1
+script = ExtResource("3_3vub5")
+metadata/difficultyProperty = &"enemyLayout"
+
+[node name="PasswordBox" type="LineEdit" parent="CanvasLayer/Visibility/MarginContainer/CenterContainer/VBoxContainer/MarginContainer2/CenterContainer/MarginContainer/Options/PasswordButton"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(175, 0)
+layout_mode = 0
+offset_left = 110.0
+offset_top = -1.0
+offset_right = 285.0
+offset_bottom = 16.0
+
+[node name="ConnectButton" type="Label" parent="CanvasLayer/Visibility/MarginContainer/CenterContainer/VBoxContainer/MarginContainer2/CenterContainer/MarginContainer/Options"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_neighbor_top = NodePath("../PasswordButton")
+focus_neighbor_bottom = NodePath("../../../../../MarginContainer4/PanelContainer/Return")
+focus_next = NodePath("../../../../../MarginContainer4/PanelContainer/Return")
+focus_previous = NodePath("../PasswordButton")
+focus_mode = 2
+mouse_filter = 1
+theme_override_fonts/font = ExtResource("2_7xvyn")
+theme_override_font_sizes/font_size = 12
+text = "Connect"
+label_settings = SubResource("LabelSettings_iofcc")
+vertical_alignment = 1
+script = ExtResource("8_flu1d")
+call_type = 2
+call_on_selection = "ConnectToArchipelago"
+metadata/difficultyProperty = &"enemyLayout"
+
+[node name="MarginContainer3" type="MarginContainer" parent="CanvasLayer/Visibility/MarginContainer/CenterContainer/VBoxContainer"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_right = 4
+
+[node name="OptionPanel" type="NinePatchRect" parent="CanvasLayer/Visibility/MarginContainer/CenterContainer/VBoxContainer/MarginContainer3"]
+layout_mode = 2
+texture = ExtResource("1_hy5co")
+region_rect = Rect2(30, 160, 36, 16)
+patch_margin_left = 27
+patch_margin_top = 13
+patch_margin_right = 27
+patch_margin_bottom = 13
+
+[node name="CenterContainer" type="CenterContainer" parent="CanvasLayer/Visibility/MarginContainer/CenterContainer/VBoxContainer/MarginContainer3"]
+custom_minimum_size = Vector2(380, 78)
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/Visibility/MarginContainer/CenterContainer/VBoxContainer/MarginContainer3/CenterContainer"]
+layout_mode = 2
+theme_override_constants/margin_top = 6
+theme_override_constants/margin_bottom = 6
+
+[node name="Server" type="Label" parent="CanvasLayer/Visibility/MarginContainer/CenterContainer/VBoxContainer/MarginContainer3/CenterContainer/MarginContainer"]
+custom_minimum_size = Vector2(340, 0)
+layout_mode = 2
+size_flags_vertical = 1
+text = "The address and port the Archipelago server is hosted on."
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="Slot" type="Label" parent="CanvasLayer/Visibility/MarginContainer/CenterContainer/VBoxContainer/MarginContainer3/CenterContainer/MarginContainer"]
+visible = false
+custom_minimum_size = Vector2(340, 0)
+layout_mode = 2
+size_flags_vertical = 1
+text = "The slot name you are connecting to."
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="Password" type="Label" parent="CanvasLayer/Visibility/MarginContainer/CenterContainer/VBoxContainer/MarginContainer3/CenterContainer/MarginContainer"]
+visible = false
+custom_minimum_size = Vector2(340, 0)
+layout_mode = 2
+size_flags_vertical = 1
+text = "The password for connecting to the server (if any)."
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="Connect" type="Label" parent="CanvasLayer/Visibility/MarginContainer/CenterContainer/VBoxContainer/MarginContainer3/CenterContainer/MarginContainer"]
+visible = false
+custom_minimum_size = Vector2(340, 0)
+layout_mode = 2
+size_flags_vertical = 1
+text = "Connect using the entered settings."
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="Return" type="Label" parent="CanvasLayer/Visibility/MarginContainer/CenterContainer/VBoxContainer/MarginContainer3/CenterContainer/MarginContainer"]
+visible = false
+custom_minimum_size = Vector2(340, 0)
+layout_mode = 2
+size_flags_vertical = 1
+text = "Return to the previous menu."
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="MarginContainer4" type="MarginContainer" parent="CanvasLayer/Visibility/MarginContainer/CenterContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="CanvasLayer/Visibility/MarginContainer/CenterContainer/VBoxContainer/MarginContainer4"]
+custom_minimum_size = Vector2(124, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="Return" type="Label" parent="CanvasLayer/Visibility/MarginContainer/CenterContainer/VBoxContainer/MarginContainer4/PanelContainer"]
+unique_name_in_owner = true
+z_index = 1
+layout_mode = 2
+focus_neighbor_top = NodePath("../../../MarginContainer2/CenterContainer/MarginContainer/Options/ConnectButton")
+focus_previous = NodePath("../../../MarginContainer2/CenterContainer/MarginContainer/Options/ConnectButton")
+focus_mode = 2
+mouse_filter = 1
+theme_override_fonts/font = ExtResource("2_7xvyn")
+theme_override_font_sizes/font_size = 12
+text = "Return"
+label_settings = SubResource("LabelSettings_eo1cp")
+horizontal_alignment = 1
+vertical_alignment = 1
+script = ExtResource("3_3vub5")
+call_type = 1
+cursor_offset_override = Vector2i(-12, 0)
+cursor_size_override = Vector2i(130, 0)
+returnOnCancelInput = true
+
+[node name="Cursor" type="NinePatchRect" parent="CanvasLayer/Visibility"]
+layout_mode = 0
+offset_left = 87.0
+offset_top = 193.0
+offset_right = 393.0
+offset_bottom = 208.0
+texture = ExtResource("1_hy5co")
+region_rect = Rect2(121, 13, 24, 15)
+patch_margin_left = 11
+patch_margin_right = 11
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+
+[node name="Audio" type="AudioStreamPlayer" parent="."]
+bus = &"Sfx"
+
+[node name="Confirm" type="AudioStreamPlayer" parent="."]
+bus = &"Sfx"

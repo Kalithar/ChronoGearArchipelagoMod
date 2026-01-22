@@ -1,0 +1,26 @@
+[gd_scene load_steps=4 format=3 uid="uid://bgei6ernpr8a8"]
+
+[ext_resource type="FontFile" uid="uid://dwi8gea14desm" path="res://Global Assets/Sprites/HUD/ChicagoFLF.ttf" id="1_cbl4i"]
+[ext_resource type="Script" uid="uid://dxlv6ixi1yjvi" path="res://Global Assets/Scripts/UI/MenuOptionNew.gd" id="1_wsnmn"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_i4asn"]
+font = ExtResource("1_cbl4i")
+font_size = 12
+outline_size = 4
+outline_color = Color(0, 0.376471, 0.792157, 1)
+
+[node name="MenuArchipelagoOption" type="Label"]
+z_index = 5
+y_sort_enabled = true
+focus_mode = 2
+mouse_filter = 1
+theme_override_fonts/font = ExtResource("1_cbl4i")
+theme_override_font_sizes/font_size = 12
+text = "Archipelago"
+label_settings = SubResource("LabelSettings_i4asn")
+horizontal_alignment = 1
+vertical_alignment = 1
+script = ExtResource("1_wsnmn")
+call_type = 3
+call_on_selection = "uid://d3r7h3pvwm627"
+metadata/_custom_type_script = "uid://dxlv6ixi1yjvi"
