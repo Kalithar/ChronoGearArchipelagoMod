@@ -6,5 +6,5 @@ func _on_sensor_body_entered(body):
 	else:
 		if state == State_Default and not targetPlayer:
 			if body.has_method("Action_Victory"):
-				GameSettings.checkLocation(GameSettings.GetStageInfo(GameSettings.goldenGearID)[9] + 100)
+				GameSettings.CheckLocation(GameSettings.GetStageInfo(goldenGearID)[9] + 100)
 				super(body)

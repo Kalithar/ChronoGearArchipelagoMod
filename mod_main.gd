@@ -36,17 +36,12 @@ func install_script_extensions() -> void:
 	# ! any script extensions should go in this directory, and should follow the same directory structure as vanilla
 	extensions_dir_path = mod_dir_path.path_join("extensions")
 
-	# ? Brief description/reason behind this edit of vanilla code...
-	#ModLoaderMod.install_script_extension(ext_dir + "entities/units/player/player.gd") # ! Note that this file does not exist in this example mod
-
 	# ! Add extensions (longform version of the above)
-	#ModLoaderMod.install_script_extension("res://mods-unpacked/AuthorName-ModName/extensions/main.gd")
-	#ModLoaderMod.install_script_extension("res://mods-unpacked/AuthorName-ModName/extensions/entities/units/player/player.gd")
 	ModLoaderMod.install_script_extension(extensions_dir_path.path_join("Global Assets/Scripts/Gameplay/GameSettings.gd"))
 	ModLoaderMod.install_script_extension(extensions_dir_path.path_join("Global Assets/Scripts/Items/GoldenGear.gd"))
 	ModLoaderMod.install_script_extension(extensions_dir_path.path_join("Global Assets/Scripts/UI/MenuResults.gd"))
-	ModLoaderMod.install_script_extension(extensions_dir_path.path_join("Global Assets/Scripts/UI/MenuMessage.gd"))
 	ModLoaderMod.install_script_extension(extensions_dir_path.path_join("Global Assets/Scripts/Enemies/BossGandr.gd"))
+	#ModLoaderMod.install_script_extension(extensions_dir_path.path_join("Global Assets/Scripts/UI/MenuFileSelect.gd")) Nope, not this one, FileSelectMenu
 
 
 func install_script_hook_files() -> void:
@@ -55,6 +50,14 @@ func install_script_hook_files() -> void:
 	ModLoaderMod.install_script_hooks("res://Global Assets/Scripts/Items/ItemThread.gd", extensions_dir_path.path_join("Global Assets/Scripts/Items/ItemThread.hooks.gd"))
 	ModLoaderMod.install_script_hooks("res://Menu Assets/Scenes/menu_title.gd", extensions_dir_path.path_join("Menu Assets/Scenes/menu_title.hooks.gd"))
 	ModLoaderMod.install_script_hooks("res://Menu Assets/Scenes/FileSelectMenu.gd", extensions_dir_path.path_join("Menu Assets/Scenes/FileSelectMenu.hooks.gd"))
+	ModLoaderMod.install_script_hooks("res://Global Assets/Scripts/Files/FileManager.gd", extensions_dir_path.path_join("Global Assets/Scripts/Files/FileManager.hooks.gd"))
+	ModLoaderMod.install_script_hooks("res://Menu Assets/Scenes/menu_fileoptions.gd", extensions_dir_path.path_join("Menu Assets/Scenes/menu_fileoptions.hooks.gd"))
+	ModLoaderMod.install_script_hooks("res://Global Assets/Scripts/Gameplay/Cutscene.gd", extensions_dir_path.path_join("Global Assets/Scripts/Gameplay/Cutscene.hooks.gd"))
+	ModLoaderMod.install_script_hooks("res://Global Assets/Scripts/UI/MenuMessage.gd", extensions_dir_path.path_join("Global Assets/Scripts/UI/MenuMessage.hooks.gd"))
+	ModLoaderMod.install_script_hooks("res://Global Assets/Scripts/UI/HUD.gd", extensions_dir_path.path_join("Global Assets/Scripts/UI/HUD.hooks.gd"))
+	ModLoaderMod.install_script_hooks("res://Global Assets/Scripts/UI/MenuWorldSelect.gd", extensions_dir_path.path_join("Global Assets/Scripts/UI/MenuWorldSelect.hooks.gd"))
+	ModLoaderMod.install_script_hooks("res://Menu Assets/Title/FileSelectPanel.gd", extensions_dir_path.path_join("Menu Assets/Title/FileSelectPanel.hooks.gd"))
+	ModLoaderMod.install_script_hooks("res://Menu Assets/Scenes/menu_threads.gd", extensions_dir_path.path_join("Menu Assets/Scenes/menu_threads.hooks.gd"))
 
 func add_translations() -> void:
 	# ! Place all of your translation files into this directory

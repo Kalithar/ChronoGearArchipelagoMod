@@ -1,10 +1,17 @@
 class_name ArchipelagoMenu
 extends GameMenu
 
+var connectionInProgress: bool = false
+
 func _ready() -> void:
 	%ServerAddressBox.text = ""
 	%SlotNameBox.text = ""
 	%PasswordBox.text = ""
+	Archipelago.connect_step.connect(UpdateConnectionStatus)
+	Archipelago.connectionrefused.connect(OnConnectRefused)
+	Archipelago.connected.connect(OnConnect)
+	Archipelago.disconnected.connect(OnDisconnect)
+	Archipelago.roominfo.connect(OnRoomInfo)
 	super._ready()
 
 func _input(event: InputEvent):
@@ -199,3 +206,54 @@ func _BuildOptionTree() -> void :
 	if description_tree:
 		description_tree_children = description_tree.get_children()
 		description_tree_size = description_tree_children.size()
+
+func ConnectToArchipelago() -> void :
+	var connectionString = %ServerAddressBox.text.split(":")
+	
+	connectionInProgress = true
+	Archipelago.ap_connect(connectionString[0], connectionString[1], %SlotNameBox.text, %PasswordBox.text)
+
+func DisconnectFromArchipelago() -> void :
+	connectionInProgress = true
+	Archipelago.ap_disconnect()
+
+func UpdateDescription() -> void :
+	if !connectionInProgress:
+		super()
+
+func UpdateConnectionStatus(msg: String) -> void:
+	%ConnectionInfo.text = msg
+
+func OnConnect(conn: ConnectionInfo, json: Dictionary):
+	connectionInProgress = false
+	%ConnectButton.visible = false
+	%Disconnect.visible = true
+	
+	#Every shop location needs to be scouted
+	for i in [1000, 1001, 1002, 1003, 1004, 1100, 1101, 1102, 1103, 1104, 1200, 1201, 1202, 1203, 1204, 1205, 1206, 1207, 1208, 1209, 1210, 1211, 1212,
+			  2000, 2001, 2002, 2003, 3000, 3001, 3002, 3003, 3100, 3101, 3102, 3103, 4000, 4001, 4002, 4003, 4004, 4005, 4006, 
+			  5000, 5001, 5002, 5003, 5004, 5006, 5006, 5007, 5008]:
+		Archipelago.conn.scout(i, 0, GameSettings.StoreShopItem)
+	
+	#Send archipelago the list of collected items in case anything was collected while disconnected
+	#Server handles all duplicates, don't need to worry here
+	var locationsToSend: Array[int]
+	for i in GameSettings.checkedLocations:
+		locationsToSend.append(i)
+	Archipelago.collect_locations(locationsToSend)
+	GameSettings.slotData = conn.slot_data
+	
+func OnConnectRefused(conn: ConnectionInfo, json: Dictionary):
+	connectionInProgress = false
+
+func OnRoomInfo(conn: ConnectionInfo, json: Dictionary):
+	Archipelago.conn.received_items = GameSettings.receivedItems
+	Archipelago.conn.obtained_item.connect(GameSettings.ReceiveServerItem)
+	Archipelago.conn.refresh_items.connect(GameSettings.RefreshItems)
+
+func OnDisconnect():
+	connectionInProgress = false
+	%ConnectButton.visible = true
+	%Disconnect.visible = false
+
+#I deleted a thing I shouldn't have, the bit that changes the description to show the %ConnectionInfo is gone

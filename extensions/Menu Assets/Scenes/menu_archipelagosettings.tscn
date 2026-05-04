@@ -39,7 +39,7 @@ sfx_scroll = ExtResource("2_flu1d")
 sfx_confirm = ExtResource("3_tvhm6")
 sfx_deny = ExtResource("4_iofcc")
 option_tree = NodePath("CanvasLayer/Visibility/MarginContainer/CenterContainer/VBoxContainer/MarginContainer2/CenterContainer/MarginContainer/Options")
-description_tree = NodePath("CanvasLayer/Visibility/MarginContainer/CenterContainer/VBoxContainer/MarginContainer3/CenterContainer/MarginContainer")
+description_tree = NodePath("CanvasLayer/Visibility/MarginContainer/CenterContainer/VBoxContainer/MarginContainer3/CenterContainer/Description")
 cursor = NodePath("CanvasLayer/Visibility/Cursor")
 visibility = NodePath("CanvasLayer/Visibility")
 
@@ -220,6 +220,16 @@ call_type = 2
 call_on_selection = "ConnectToArchipelago"
 metadata/difficultyProperty = &"enemyLayout"
 
+[node name="Disconnect" type="Label" parent="CanvasLayer/Visibility/MarginContainer/CenterContainer/VBoxContainer/MarginContainer2/CenterContainer/MarginContainer/Options"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+text = "Disconnect"
+script = ExtResource("8_flu1d")
+call_type = 2
+call_on_selection = "DisconnectFromArchipelago"
+metadata/_custom_type_script = "uid://cgtkkkaon7p7l"
+
 [node name="MarginContainer3" type="MarginContainer" parent="CanvasLayer/Visibility/MarginContainer/CenterContainer/VBoxContainer"]
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
@@ -239,12 +249,12 @@ patch_margin_bottom = 13
 custom_minimum_size = Vector2(380, 78)
 layout_mode = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/Visibility/MarginContainer/CenterContainer/VBoxContainer/MarginContainer3/CenterContainer"]
+[node name="Description" type="MarginContainer" parent="CanvasLayer/Visibility/MarginContainer/CenterContainer/VBoxContainer/MarginContainer3/CenterContainer"]
 layout_mode = 2
 theme_override_constants/margin_top = 6
 theme_override_constants/margin_bottom = 6
 
-[node name="Server" type="Label" parent="CanvasLayer/Visibility/MarginContainer/CenterContainer/VBoxContainer/MarginContainer3/CenterContainer/MarginContainer"]
+[node name="Server" type="Label" parent="CanvasLayer/Visibility/MarginContainer/CenterContainer/VBoxContainer/MarginContainer3/CenterContainer/Description"]
 custom_minimum_size = Vector2(340, 0)
 layout_mode = 2
 size_flags_vertical = 1
@@ -252,7 +262,7 @@ text = "The address and port the Archipelago server is hosted on."
 horizontal_alignment = 1
 autowrap_mode = 2
 
-[node name="Slot" type="Label" parent="CanvasLayer/Visibility/MarginContainer/CenterContainer/VBoxContainer/MarginContainer3/CenterContainer/MarginContainer"]
+[node name="Slot" type="Label" parent="CanvasLayer/Visibility/MarginContainer/CenterContainer/VBoxContainer/MarginContainer3/CenterContainer/Description"]
 visible = false
 custom_minimum_size = Vector2(340, 0)
 layout_mode = 2
@@ -261,7 +271,7 @@ text = "The slot name you are connecting to."
 horizontal_alignment = 1
 autowrap_mode = 2
 
-[node name="Password" type="Label" parent="CanvasLayer/Visibility/MarginContainer/CenterContainer/VBoxContainer/MarginContainer3/CenterContainer/MarginContainer"]
+[node name="Password" type="Label" parent="CanvasLayer/Visibility/MarginContainer/CenterContainer/VBoxContainer/MarginContainer3/CenterContainer/Description"]
 visible = false
 custom_minimum_size = Vector2(340, 0)
 layout_mode = 2
@@ -270,7 +280,7 @@ text = "The password for connecting to the server (if any)."
 horizontal_alignment = 1
 autowrap_mode = 2
 
-[node name="Connect" type="Label" parent="CanvasLayer/Visibility/MarginContainer/CenterContainer/VBoxContainer/MarginContainer3/CenterContainer/MarginContainer"]
+[node name="Connect" type="Label" parent="CanvasLayer/Visibility/MarginContainer/CenterContainer/VBoxContainer/MarginContainer3/CenterContainer/Description"]
 visible = false
 custom_minimum_size = Vector2(340, 0)
 layout_mode = 2
@@ -279,7 +289,7 @@ text = "Connect using the entered settings."
 horizontal_alignment = 1
 autowrap_mode = 2
 
-[node name="Return" type="Label" parent="CanvasLayer/Visibility/MarginContainer/CenterContainer/VBoxContainer/MarginContainer3/CenterContainer/MarginContainer"]
+[node name="Return" type="Label" parent="CanvasLayer/Visibility/MarginContainer/CenterContainer/VBoxContainer/MarginContainer3/CenterContainer/Description"]
 visible = false
 custom_minimum_size = Vector2(340, 0)
 layout_mode = 2
@@ -287,6 +297,11 @@ size_flags_vertical = 1
 text = "Return to the previous menu."
 horizontal_alignment = 1
 autowrap_mode = 2
+
+[node name="ConnectionInfo" type="Label" parent="CanvasLayer/Visibility/MarginContainer/CenterContainer/VBoxContainer/MarginContainer3/CenterContainer/Description"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
 
 [node name="MarginContainer4" type="MarginContainer" parent="CanvasLayer/Visibility/MarginContainer/CenterContainer/VBoxContainer"]
 layout_mode = 2

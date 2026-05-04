@@ -1,0 +1,245 @@
+[gd_scene load_steps=12 format=3 uid="uid://c2c6wyvov33to"]
+
+[ext_resource type="Script" uid="uid://ofurnlbxw35g" path="res://mods-unpacked/Kalithar-Archipelago/extensions/Menu Assets/Scenes/menu_archipelagofileoptions.gd" id="1_2hij5"]
+[ext_resource type="Texture2D" uid="uid://d30t2dojevspk" path="res://Global Assets/Sprites/HUD/hud_menu.png" id="2_8ayom"]
+[ext_resource type="FontFile" uid="uid://dwi8gea14desm" path="res://Global Assets/Sprites/HUD/ChicagoFLF.ttf" id="3_va5ym"]
+[ext_resource type="Script" uid="uid://dxlv6ixi1yjvi" path="res://Global Assets/Scripts/UI/MenuOptionNew.gd" id="4_8dk3h"]
+[ext_resource type="AudioStream" uid="uid://bkk46ppr8vw0s" path="res://Global Assets/Sounds/start.wav" id="5_stfsq"]
+[ext_resource type="PackedScene" uid="uid://bgei6ernpr8a8" path="res://mods-unpacked/Kalithar-Archipelago/extensions/Menu Assets/Scenes/menu_archipelagooption.tscn" id="6_kpcia"]
+[ext_resource type="FontFile" uid="uid://j7vv5j5xnjtr" path="res://Global Assets/Sprites/HUD/BestTen-CRT.otf" id="7_8ktj6"]
+[ext_resource type="Script" uid="uid://cnvahqk7wg21u" path="res://Menu Assets/Scenes/new_alert.gd" id="8_xs54p"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_2hij5"]
+font = ExtResource("3_va5ym")
+font_size = 12
+outline_size = 4
+outline_color = Color(0, 0.376471, 0.792157, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_8ayom"]
+font = ExtResource("3_va5ym")
+font_size = 12
+outline_size = 4
+outline_color = Color(0, 0.376471, 0.792157, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_va5ym"]
+font = ExtResource("7_8ktj6")
+font_size = 11
+font_color = Color(0.815686, 0.231373, 0.403922, 1)
+shadow_color = Color(0.129614, 0.0688595, 0.12107, 1)
+
+[node name="ArchipelagoFileOptions" type="Control" node_paths=PackedStringArray("option_tree", "cursor", "visibility")]
+layout_mode = 3
+anchors_preset = 0
+focus_mode = 2
+mouse_filter = 2
+script = ExtResource("1_2hij5")
+enable_cursor_smoothing = true
+cursor_offset = Vector2(12, 1)
+cursor_custom_width = 326
+hint_enabled = false
+option_tree = NodePath("Visibility/MarginContainer/VBoxContainer2/MarginContainer/HBoxContainer/MarginContainer/CenterContainer/MarginContainer/Options")
+auto_build_options = true
+cursor = NodePath("Visibility/Cursor")
+visibility = NodePath("Visibility")
+
+[node name="Visibility" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+focus_mode = 2
+mouse_filter = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="Visibility"]
+custom_minimum_size = Vector2(480, 360)
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+theme_override_constants/margin_bottom = 32
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Visibility/MarginContainer"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="Visibility/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_top = 12
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Visibility/MarginContainer/VBoxContainer/MarginContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="LabelPanel" type="NinePatchRect" parent="Visibility/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(192, 41)
+layout_mode = 2
+region_rect = Rect2(12, 12, 88, 88)
+patch_margin_left = 27
+patch_margin_top = 13
+patch_margin_right = 27
+patch_margin_bottom = 13
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="Visibility/MarginContainer"]
+layout_mode = 2
+alignment = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="Visibility/MarginContainer/VBoxContainer2"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Visibility/MarginContainer/VBoxContainer2/MarginContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="Visibility/MarginContainer/VBoxContainer2/MarginContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="OptionPanel" type="NinePatchRect" parent="Visibility/MarginContainer/VBoxContainer2/MarginContainer/HBoxContainer/MarginContainer"]
+layout_mode = 2
+texture = ExtResource("2_8ayom")
+region_rect = Rect2(12, 12, 88, 88)
+patch_margin_left = 27
+patch_margin_top = 13
+patch_margin_right = 27
+patch_margin_bottom = 13
+
+[node name="CenterContainer" type="CenterContainer" parent="Visibility/MarginContainer/VBoxContainer2/MarginContainer/HBoxContainer/MarginContainer"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="Visibility/MarginContainer/VBoxContainer2/MarginContainer/HBoxContainer/MarginContainer/CenterContainer"]
+layout_mode = 2
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_bottom = 10
+
+[node name="Options" type="VBoxContainer" parent="Visibility/MarginContainer/VBoxContainer2/MarginContainer/HBoxContainer/MarginContainer/CenterContainer/MarginContainer"]
+z_index = 1
+custom_minimum_size = Vector2(320, 0)
+layout_mode = 2
+alignment = 2
+
+[node name="Start" type="Label" parent="Visibility/MarginContainer/VBoxContainer2/MarginContainer/HBoxContainer/MarginContainer/CenterContainer/MarginContainer/Options"]
+layout_mode = 2
+focus_neighbor_bottom = NodePath("../MenuArchipelagoOption")
+focus_next = NodePath("../MenuArchipelagoOption")
+focus_mode = 2
+mouse_filter = 1
+theme_override_fonts/font = ExtResource("3_va5ym")
+theme_override_font_sizes/font_size = 12
+text = "Start Game"
+label_settings = SubResource("LabelSettings_2hij5")
+horizontal_alignment = 1
+vertical_alignment = 1
+script = ExtResource("4_8dk3h")
+call_type = 5
+call_on_selection = "StartGame"
+sfx_override = ExtResource("5_stfsq")
+
+[node name="MenuArchipelagoOption" parent="Visibility/MarginContainer/VBoxContainer2/MarginContainer/HBoxContainer/MarginContainer/CenterContainer/MarginContainer/Options" instance=ExtResource("6_kpcia")]
+unique_name_in_owner = true
+layout_mode = 2
+focus_neighbor_top = NodePath("../Start")
+focus_neighbor_bottom = NodePath("../Extras")
+focus_next = NodePath("../Extras")
+focus_previous = NodePath("../Start")
+
+[node name="Extras" type="Label" parent="Visibility/MarginContainer/VBoxContainer2/MarginContainer/HBoxContainer/MarginContainer/CenterContainer/MarginContainer/Options"]
+z_index = 5
+y_sort_enabled = true
+layout_mode = 2
+size_flags_vertical = 2
+focus_neighbor_top = NodePath("../MenuArchipelagoOption")
+focus_neighbor_bottom = NodePath("../Copy")
+focus_next = NodePath("../Copy")
+focus_previous = NodePath("../MenuArchipelagoOption")
+focus_mode = 2
+mouse_filter = 1
+theme_override_fonts/font = ExtResource("3_va5ym")
+theme_override_font_sizes/font_size = 12
+text = "Extras"
+label_settings = SubResource("LabelSettings_8ayom")
+horizontal_alignment = 1
+vertical_alignment = 1
+script = ExtResource("4_8dk3h")
+call_type = 3
+call_on_selection = "res://Menu Assets/Scenes/menu_extras.tscn"
+
+[node name="NewAlert" type="Label" parent="Visibility/MarginContainer/VBoxContainer2/MarginContainer/HBoxContainer/MarginContainer/CenterContainer/MarginContainer/Options/Extras"]
+layout_mode = 0
+offset_left = 196.0
+offset_top = 0.5
+offset_right = 225.0
+offset_bottom = 12.5
+text = "new!"
+label_settings = SubResource("LabelSettings_va5ym")
+horizontal_alignment = 1
+vertical_alignment = 1
+script = ExtResource("8_xs54p")
+alert_type = "Any"
+
+[node name="Copy" type="Label" parent="Visibility/MarginContainer/VBoxContainer2/MarginContainer/HBoxContainer/MarginContainer/CenterContainer/MarginContainer/Options"]
+layout_mode = 2
+focus_neighbor_top = NodePath("../Extras")
+focus_neighbor_bottom = NodePath("../Delete")
+focus_next = NodePath("../Delete")
+focus_previous = NodePath("../Extras")
+focus_mode = 2
+mouse_filter = 1
+theme_override_fonts/font = ExtResource("3_va5ym")
+theme_override_font_sizes/font_size = 12
+text = "Copy File"
+label_settings = SubResource("LabelSettings_2hij5")
+horizontal_alignment = 1
+vertical_alignment = 1
+script = ExtResource("4_8dk3h")
+call_type = 5
+call_on_selection = "Copy"
+
+[node name="Delete" type="Label" parent="Visibility/MarginContainer/VBoxContainer2/MarginContainer/HBoxContainer/MarginContainer/CenterContainer/MarginContainer/Options"]
+layout_mode = 2
+focus_neighbor_top = NodePath("../Copy")
+focus_neighbor_bottom = NodePath("../Return")
+focus_next = NodePath("../Return")
+focus_previous = NodePath("../Copy")
+focus_mode = 2
+mouse_filter = 1
+theme_override_fonts/font = ExtResource("3_va5ym")
+theme_override_font_sizes/font_size = 12
+text = "Delete File"
+label_settings = SubResource("LabelSettings_2hij5")
+horizontal_alignment = 1
+vertical_alignment = 1
+script = ExtResource("4_8dk3h")
+call_type = 3
+call_on_selection = "res://Menu Assets/Scenes/menu_confirmdeletion.tscn"
+
+[node name="Return" type="Label" parent="Visibility/MarginContainer/VBoxContainer2/MarginContainer/HBoxContainer/MarginContainer/CenterContainer/MarginContainer/Options"]
+layout_mode = 2
+focus_neighbor_top = NodePath("../Delete")
+focus_previous = NodePath("../Delete")
+focus_mode = 2
+mouse_filter = 1
+theme_override_fonts/font = ExtResource("3_va5ym")
+theme_override_font_sizes/font_size = 12
+text = "Return"
+label_settings = SubResource("LabelSettings_2hij5")
+horizontal_alignment = 1
+vertical_alignment = 1
+script = ExtResource("4_8dk3h")
+call_type = 1
+
+[node name="Cursor" type="NinePatchRect" parent="Visibility"]
+layout_mode = 0
+offset_left = 77.0
+offset_top = 256.0
+offset_right = 403.0
+offset_bottom = 271.0
+pivot_offset = Vector2(-13, -67)
+texture = ExtResource("2_8ayom")
+region_rect = Rect2(121, 13, 24, 15)
+patch_margin_left = 11
+patch_margin_right = 11
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+
+[node name="Audio" type="AudioStreamPlayer" parent="."]
+bus = &"Sfx"
+
+[node name="Confirm" type="AudioStreamPlayer" parent="."]
+bus = &"Sfx"

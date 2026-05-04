@@ -67,4 +67,5 @@ func ToggleArchipelago() -> void:
 	_SetArchipelago(not _archipelago)
 
 func NewGame() -> void :
-	parentMenu.CreateNewGame(local_difficulty, _play_tutorial, _speedrun, _archipelago)
+	GameSettings.archipelagoEnabled = _archipelago
+	parentMenu.CreateNewGame(local_difficulty, _play_tutorial, _speedrun)

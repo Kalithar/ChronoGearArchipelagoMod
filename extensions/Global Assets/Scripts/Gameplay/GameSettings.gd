@@ -5,24 +5,25 @@ extends "res://Global Assets/Scripts/Gameplay/GameSettings.gd"
 # Master variable that notes whether this is an Archipelago enabled save file
 var archipelagoEnabled: bool
 
-#Options from the yaml that the game needs to know about
-#Current hardcoded values are just how they function with what I've made
-#Later versions will read this from options and change accordingly
-var apEarlyChronoGear: bool
-var tower2RequiresShackles: bool
-var autoSwitchBorderArt: bool
+#Slot data received from the server
+var slotData: Dictionary
 
 # Array to store access to the level select categories (all of Doorway to Nowhere, for example)
 # This is not access to individual levels, as that's controlled through story flags
-var archipelagoStageAccess: Array[bool] 
+var archipelagoStageAccess: Array = [false, true, false, false, false, false, false, false,
+										   false, false, false, false, false, false, false, false, 
+										   false, false, false, false, false, false, false, false, 
+										   false, false, false, false, false, false, false, false, 
+										   false, false]
 
 # Array to store access to each world
-# Thankfully, much simpler, and is just a 1-to-1 for each world's ID.
-# The only exception is that 6, which is unused in base game, is the alt timeline.
-var archipelagoWorldAccess: Array[bool]
+# The worlds in this array are in a counterclockwise circle starting with Time, so:
+# Time, Nature, Civ, Chaos, Space, Darkness
+# Index 6, which is unused in base game, is the alt timeline.
+var archipelagoWorldAccess: Array = [true, false, false, false, false, false, false]
 
 #list of checked locations, sent to the server when connecting to make sure nothing was missed
-var checkedLocations: Array[int]  
+var checkedLocations: Array
 
 #Count of gears, since they're being handled differently here
 var archipelagoGearCount: int
@@ -31,13 +32,17 @@ var archipelagoGearCount: int
 var archipelagoShackleCount: int
 
 #Tracks what levels have been completed, used for level unlock locations
-var archipelagoCompletedLevels: Array[int]
+var archipelagoCompletedLevels: Array
+
+#Marks whether Steel on Steel and Zero Seconds to Midnight have been received, as they might not be unlocked immediately
+var archipelagoStSReceived: bool = false
+var archipelagoZStMReceived: bool = false
 
 #Whether or not the Chrono Gear has been received
 var archipelagoChronoGear: bool = false
 
 #Tracks the number of threads received overall
-var archipelagoThreadCounts: Dictionary[String, PackedInt32Array] = {
+var archipelagoThreadCounts: Dictionary = {
 	"time": [0, 0, 0], 
 	"space": [0, 0], 
 	"nature": [0], 
@@ -46,7 +51,7 @@ var archipelagoThreadCounts: Dictionary[String, PackedInt32Array] = {
 }
 
 #Tracks the number of purchases made on each shop page.
-var archipelagoShopPurchases: Dictionary[String, PackedInt32Array] = {
+var archipelagoShopPurchases: Dictionary = {
 	"time": [0, 0, 0], 
 	"space": [0, 0], 
 	"nature": [0], 
@@ -54,15 +59,46 @@ var archipelagoShopPurchases: Dictionary[String, PackedInt32Array] = {
 	"chaos": [0], 
 }
 
+#Tracks which specific items have been purchased
+#Added separately because I'm doing this part of the shop much later
+var archipelagoItemsPurchased: Dictionary = {
+	"time": [
+				[false, false, false, false, false],
+				[false, false, false, false, false], 
+				[false, false, false, false, false, false, false, false, false, false, false, false, false],
+			],
+	"space": [
+			[false, false, false, false], 
+			[false, false, false, false]
+			],
+	"nature":
+			[[false, false, false, false]],
+	"civilization":
+			[[false, false, false, false, false, false, false]],
+	"chaos": 
+			[[false, false, false, false, false, false, false, false, false]]
+}
+
+#Stores the items that are in the shop locations so the text in the shops can be updated
+var archipelagoShopItems: Dictionary
+
 #Flag for the three starting CDs
 var startingCDsSent: bool = false
 
+#Marks which collectibles have been picked up so they don't keep spawning
+#Normally it checks by which have actually been unlocked
+var collectedCDs: Array
+var collectedThreads: Array
+
+#Holding spot for the ConnectionInfo's received_items array, as the ConnectionInfo won't exist when
+#the file is loaded
+var receivedItems: Array
 
 #The GoldenGears() function actually tracks the number of stages completed, not physical gears collected
 
 func GetStageAccess(a: String):
 	if(!archipelagoEnabled):
-		super(a)
+		return super(a)
 	else:
 		match a:
 			"level_sanctum": return archipelagoStageAccess[0]
@@ -105,7 +141,7 @@ func GetStageAccess(a: String):
 		
 func GetWorldAccess(a: int):
 	if(!archipelagoEnabled):
-		super(a)
+		return super(a)
 	else:
 		return archipelagoWorldAccess[a]
 	
@@ -116,7 +152,7 @@ func GetWorldAccess(a: int):
 #I have added on the first part of the location ID for anything in those levels at the end.
 func GetStageInfo(a: int):
 	if(!archipelagoEnabled):
-		super(a)
+		return super(a)
 	else:
 		match a:
 			1: return ["level_sanctum", tr("Storming the Sanctum"), 80, MinutesToMilliseconds(3), 100, "archipelago_sanctum", 1, 1, 1, 110000]
@@ -170,7 +206,7 @@ func GetStageInfo(a: int):
 			49: return ["level_tower2", tr("The Final Ascent"), 150, MinutesToMilliseconds(40), 400, "archipelago_tower2", 1, 49, 57, 630000]
 			50: return ["level_tower2_boss", tr("Steel on Steel"), 0, MinutesToMilliseconds(8), 200, "archipelago_tower2_boss", 1, 50, 58, 631000]
 			51: return ["level_sanctum2", tr("Defending the Sanctum"), 100, MinutesToMilliseconds(6), 200, "archipelago_sanctum2", 1, 51, 48, 112000]
-			52: return ["hub_sanctum", tr("The Council Meeting"), 0, MinutesToMilliseconds(5), 100, "", 0, 52, 11, 100000] #I can tell these are going to be a pain
+			52: return ["hub_sanctum", tr("The Council Meeting"), 0, MinutesToMilliseconds(5), 100, "", 0, 52, 11, 100000]
 			53: return ["hub_starship", tr("Timeless Weapon"), 0, MinutesToMilliseconds(5), 100, "", 0, 53, 29, 300000]
 			54: return ["hub_garden", tr("The Golden Scales"), 0, MinutesToMilliseconds(5), 100, "", 0, 54, 22, 200000]
 			55: return ["hub_city", "", 0, MinutesToMilliseconds(5), 100, "", 0, 55, 46, 500000]
@@ -181,6 +217,14 @@ func GetStageInfo(a: int):
 			60: return ["hub_sanctum", tr("The Secret Sanctum"), 0, MinutesToMilliseconds(5), 100, "endingB", 2, 60, 60, 101000]
 			61: return ["level_tower2_boss2", tr("Zero Seconds To Midnight"), 0, MinutesToMilliseconds(7), 150, "archipelago_final", 1, 61, 61, 632000]
 
+	return ["", "Invalid Gear", 100, MinutesToMilliseconds(5), 100, "", 0, 0, 0, 999000]
+
+
+func UpdateStoryFlag(flagName: String, flagValue: int):
+	if archipelagoEnabled:
+		if not storyFlag.keys().has(flagName):
+			storyFlag[flagName] = 0
+	super(flagName, flagValue)
 
 #You will be my nemesis in time.
 #also this is where golden gear count is incremented
@@ -251,10 +295,10 @@ func UpdateStoryFlags():
 			GameSettings.UnlockCodec("codec_Tutorial_ChronoGear")
 
 		#Instead of granting the CDs, check their locations
-		for i in [100201, 100202, 100203]:
-			if i not in checkedLocations:
+		if not startingCDsSent:
+			for i in [100201, 100202, 100203]:
 				CheckLocation(i)
-
+			startingCDsSent = true
 
 		if not achievementsUnlocked.has("ach_holoxpert1") and (goldenGears[4] or goldenGearAcquired == 4):
 			UnlockAchievement("ach_holoxpert1")
@@ -295,32 +339,123 @@ func UpdateStoryFlags():
 			if gears >= 35 and time < MinutesToMilliseconds(180):
 				UnlockAchievement("ach_the_clock_runs_fast")
 
+#If the server sends a fresh item list, need to replace all current items with the sent list
+func RefreshItems(items: Array[NetworkItem]):
+	archipelagoStageAccess = [false, true, false, false, false, false, false, false,
+							  false, false, false, false, false, false, false, false, 
+							  false, false, false, false, false, false, false, false, 
+							  false, false, false, false, false, false, false, false, 
+							  false, false]
+	archipelagoWorldAccess = [true, false, false, false, false, false, false]
+	archipelagoGearCount = 0
+	archipelagoShackleCount = 0
+	archipelagoChronoGear = false
+	archipelagoThreadCounts = {
+		"time": [0, 0, 0], 
+		"space": [0, 0], 
+		"nature": [0], 
+		"civilization": [0], 
+		"chaos": [0], 
+	}
+	archipelagoItemsPurchased = {
+		"time": [
+				[false, false, false, false, false],
+				[false, false, false, false, false], 
+				[false, false, false, false, false, false, false, false, false, false, false, false, false],
+			],
+		"space": [
+			[false, false, false, false], 
+			[false, false, false, false]
+			],
+		"nature":
+			[[false, false, false, false]],
+		"civilization":
+			[[false, false, false, false, false, false, false]],
+		"chaos": 
+			[[false, false, false, false, false, false, false, false, false]]
+	}
+	storyFlag["ending"] = 0
+	for i in range(62):
+		if GetStageInfo(i)[5] != "" and storyFlag.keys().has(GetStageInfo(i)[5]):
+			storyFlag[GetStageInfo(i)[5]] = 0
+	
+	for item in items:
+		#Regular receive item to not get a HUD message for it
+		ReceiveItem(item.id)	
+
+#Handles an item received from the server (which should be all of them, but modularity)
+func ReceiveServerItem(item: NetworkItem):
+	ReceiveItem(item.id)
+	if item.is_local():
+		var message = "You found your " + item.get_name()
+		hud.SetMessage(message)
+	else:
+		var message = "Received " + item.get_name() + " from " + Archipelago.conn.get_player_name(item.src_player_id)
+		hud.SetMessage(message)
 
 func ReceiveItem(id: int):
-	if (id / 1000) == 1:
+	if (id / 1000) as int == 1:
 		#Stage or world unlock, type is next digit
-		if (id % 1000) / 100 == 1:
+		if (id % 1000) / 100 as int == 1:
 			#Stage unlock, stage ID is the last 2 digits
 			var stageID = id % 100
-			if(stageID != 50 && stageID != 61): #Not Steel on Steel or ZStM
-				UpdateStoryFlag(GetStageInfo(stageID)[5], 1) #unlock the level
-				UnlockStage(stageID)
-			else:
-				CheckTower2Unlocks(stageID)
+			match stageID:
+				50:
+					archipelagoStSReceived = true
+					CheckTower2Unlocks(50)
+				61:
+					archipelagoZStMReceived = true
+					CheckTower2Unlocks(61)
+				_:
+					UpdateStoryFlag(GetStageInfo(stageID)[5], 1) #unlock the level
+					UnlockStage(stageID)
+					if slotData["world_unlock_mode"] == 0:
+						UnlockWorld(stageID)
 		else:
 			#World unlock, last digit is the ID
-			var worldID = id % 10
-			archipelagoWorldAccess[worldID] = true
+			var worldID = id % 10 as int
+			#The worlds are in a weird order (see the archipelagoWorldAccess array),
+			#and I did not know that when making these IDs
+			match worldID:
+				0:
+					archipelagoWorldAccess[0] = true
+				1:
+					archipelagoWorldAccess[1] = true
+				2:
+					archipelagoWorldAccess[4] = true
+				3:
+					archipelagoWorldAccess[2] = true
+				4:
+					archipelagoWorldAccess[3] = true
+				5:
+					archipelagoWorldAccess[5] = true
+				6:
+					archipelagoWorldAccess[6] = true
 	else:
 		#Item unlock, next digit is the item type
-		match ((id % 1000) / 100):
-			0: archipelagoGearCount += 1
+		match ((id % 1000) / 100) as int:
+			0: 
+				archipelagoGearCount += 1
+				CheckGoalCondition()
 			1: 
 				archipelagoShackleCount += 1
 				CheckTower2Unlocks(50) #Steel on Steel
 				CheckTower2Unlocks(61) #Zero Seconds to Midnight
-			2: UnlockThread(id)
-			3: UnlockCD(cds[id % 100].cd_id)
+			2: 
+				#thread unlock, last two digits are shop then page
+				match (id / 10) % 10:
+					0:
+						archipelagoThreadCounts["time"][id % 10] += 1
+					1:
+						archipelagoThreadCounts["nature"][id % 10] += 1
+					2:
+						archipelagoThreadCounts["space"][id % 10] += 1
+					3:
+						archipelagoThreadCounts["civilization"][id % 10] += 1
+					4:
+						archipelagoThreadCounts["chaos"][id % 10] += 1
+				UnlockThread(id) #I need to account for the different pages of threads now
+			3: UnlockCD(cds[(id % 100) - 1].cd_id) #I assumed this was 1 indexed when I made the item IDs, it's not
 			4: #Ability Unlocks
 				match (id % 100):
 					0: 
@@ -330,9 +465,6 @@ func ReceiveItem(id: int):
 						#For now, this is just the chrono gear. I'll be adding other abilities later
 			5: #Border arts
 				borderArtUnlocked.append(borderArt.keys()[id % 100])
-				if autoSwitchBorderArt:
-					SetBorderArt(borderArt.keys()[id % 100])
-					borderArtChanged += 1
 
 #Maps individual levels to the stages they are in	
 func UnlockStage(id: int):
@@ -385,18 +517,44 @@ func UnlockStage(id: int):
 		59: archipelagoStageAccess[31] = true
 		61:	archipelagoStageAccess[33] = true
 
+#Maps levels to the world they're in, to be called in automatic world unlock mode
+func UnlockWorld(id: int):
+	match id:
+		1, 2, 4, 5, 7, 9, 39, 51, 52:
+			archipelagoWorldAccess[0] = true #Time
+		11, 12, 14, 15, 17, 18, 19, 54:
+			archipelagoWorldAccess[1] = true #Nature
+		21, 23, 24, 26, 53:
+			archipelagoWorldAccess[4] = true #Space
+		27, 28, 29, 31, 33, 56:
+			archipelagoWorldAccess[2] = true #Civ
+		35, 36, 38, 40, 41, 55:
+			archipelagoWorldAccess[3] = true #Chaos
+		42, 48, 49, 50, 61:
+			archipelagoWorldAccess[5] = true #Darkness
+		43, 44, 45, 46, 47, 57, 58, 59:
+			archipelagoWorldAccess[6] = true #Alter
+
 #Extra logic handling for Steel on Steel and Zero Seconds to Midnight,
 #which both require having all 5 shackles to unlock
 func CheckTower2Unlocks(id: int):
-	if (archipelagoShackleCount >= 5):
-		UpdateStoryFlag(GetStageInfo(id)[5], 1) #unlock the level
-		UnlockStage(id) 
-		
+	if id == 50:
+		#Steel on Steel
+		if (archipelagoShackleCount >= slotData["steel_on_steel_shackle_requirement"] and archipelagoStSReceived):
+			UpdateStoryFlag(GetStageInfo(id)[5], 1) #unlock the level
+			UnlockStage(id) 
+	else:
+		#Zero Seconds to Midnight
+		if (archipelagoShackleCount >= slotData["zero_seconds_to_midnight_shackle_requirement"] and archipelagoZStMReceived):
+			UpdateStoryFlag(GetStageInfo(id)[5], 1) #unlock the level
+			UpdateStoryFlag("ending", 1) #Make sure the cutscene lets you through
+			UnlockStage(id) 
 
 #This will send the checked location over to Archipelago, once I have more of that figured out
 func CheckLocation(locationId: int):
-	checkedLocations.append(locationId)
-	return locationId
+	if not checkedLocations.has(locationId): 
+		checkedLocations.append(locationId)
+	Archipelago.collect_location(locationId)
 
 #Some extra handling for purchasing something from a shop.
 #Could probably be done on the shop's end, but keeping this in one place
@@ -413,6 +571,7 @@ func CheckShopLocation(shop: String, page: int, unlock: int):
 		"chaos":
 			CheckLocation(5000 + (100 * page) + unlock)
 	archipelagoShopPurchases[shop][page] += 1
+	archipelagoItemsPurchased[shop][page][unlock] = true
 
 #Marks a level as having been completed, and checks to see if that should send any level unlock checks
 func MarkLevelCompletion(levelId: int):
@@ -448,10 +607,11 @@ func MarkLevelCompletion(levelId: int):
 		#12: If I'm correct, Autumn Harvest is actually not required 
 		14: 
 			if(archipelagoCompletedLevels.has(14) and archipelagoCompletedLevels.has(26)):
-				CheckLocation(4) #World of Civilization
-				CheckLocation(5) #World of Chaos
-				CheckLocation(GameSettings.GetStageInfo(27)[9]) #Road to Civilization
-				CheckLocation(GameSettings.GetStageInfo(35)[9]) #Caravan of Darkness
+				if slotData["intermission_world_unlocks"] == false:
+					CheckLocation(4) #World of Civilization
+					CheckLocation(5) #World of Chaos
+					CheckLocation(GameSettings.GetStageInfo(27)[9]) #Road to Civilization
+					CheckLocation(GameSettings.GetStageInfo(35)[9]) #Caravan of Darkness
 				CheckLocation(GameSettings.GetStageInfo(42)[9]) #Intermission
 		15: 
 			if(archipelagoCompletedLevels.has(15) and archipelagoCompletedLevels.has(17)):
@@ -472,10 +632,11 @@ func MarkLevelCompletion(levelId: int):
 			CheckLocation(GameSettings.GetStageInfo(26)[9]) #Ganmo's Grand Finale
 		26: 
 			if(archipelagoCompletedLevels.has(14) and archipelagoCompletedLevels.has(26)):
-				CheckLocation(4) #World of Civilization
-				CheckLocation(5) #World of Chaos
-				CheckLocation(GameSettings.GetStageInfo(27)[9]) #Road to Civilization
-				CheckLocation(GameSettings.GetStageInfo(35)[9]) #Caravan of Darkness
+				if slotData["intermission_world_unlocks"] == false:
+					CheckLocation(4) #World of Civilization
+					CheckLocation(5) #World of Chaos
+					CheckLocation(GameSettings.GetStageInfo(27)[9]) #Road to Civilization
+					CheckLocation(GameSettings.GetStageInfo(35)[9]) #Caravan of Darkness
 				CheckLocation(GameSettings.GetStageInfo(42)[9]) #Intermission
 		27: 
 			CheckLocation(GameSettings.GetStageInfo(29)[9]) #Path of Memories
@@ -503,7 +664,12 @@ func MarkLevelCompletion(levelId: int):
 		41: 
 			if archipelagoCompletedLevels.has(28) and archipelagoCompletedLevels.has(41):
 				CheckLocation(GameSettings.GetStageInfo(39)[9]) #Case Closed
-		#42: Intermission probably won't do anything for now
+		42: 
+			if slotData["intermission_world_unlocks"] == true:
+				CheckLocation(4) #World of Civilization
+				CheckLocation(5) #World of Chaos
+				CheckLocation(GameSettings.GetStageInfo(27)[9]) #Road to Civilization
+				CheckLocation(GameSettings.GetStageInfo(35)[9]) #Caravan of Darkness
 		43: 
 			CheckLocation(GameSettings.GetStageInfo(44)[9]) #Entropy
 			CheckLocation(70) #Alter Hub
@@ -520,29 +686,138 @@ func MarkLevelCompletion(levelId: int):
 		49: 
 			CheckLocation(GameSettings.GetStageInfo(50)[9]) #Steel on Steel
 		50: 
+			CheckGoalCondition()
 			CheckLocation(GameSettings.GetStageInfo(61)[9]) #Zero Seconds to Midnight
 		51: 
 			CheckLocation(GameSettings.GetStageInfo(43)[9]) #Solitude
-			#CheckLocation(7) #Alter timeline unlock
+			CheckLocation(7) #Alter timeline unlock
 		58: 
 			CheckLocation(GameSettings.GetStageInfo(45)[9]) #Gloom
 		59: 
 			CheckLocation(GameSettings.GetStageInfo(48)[9]) #Her Time is Now
 			CheckLocation(60) #World of Darkness unlock
-		#61: Some kind of victory condition check
+		61: 
+			CheckGoalCondition()
 
-func ArchipelagoThreadsAvailable(shop: String = "none", page: int = 0):
+func ArchipelagoThreadsAvailable(shop: String = "none", page: int = 0) -> int:
 	if(!archipelagoEnabled or (shop == "none" and page == 0)):
-		ThreadsAvailable()
+		return ThreadsAvailable()
 	else:
-		#Create an archipelagoThreads 2D array that tracks threads per page
-		#Also add code to the shop to mark number of purchases from a specific page
-		return archipelagoThreadCounts[shop][page] - archipelagoShopPurchases[shop][page]
-			
+		#Making it return at least 0 in case something weird happens, but I don't expect it to
+		return max(archipelagoThreadCounts[shop][page] - archipelagoShopPurchases[shop][page], 0)
+
+func StoreShopItem(item: NetworkItem):
+	if archipelagoShopItems == null:
+		archipelagoShopItems = {}
+	archipelagoShopItems[item.loc_id] = item
+
+func CheckGoalCondition():
+	match slotData["goal_condition"]:
+		0:
+			#Clear Steel on Steel
+			if archipelagoCompletedLevels.has(50):
+				Archipelago.set_client_status(AP.ClientStatus.CLIENT_GOAL)
+		1:
+			#Clear Zero Seconds to Midnight
+			if archipelagoCompletedLevels.has(61):
+				Archipelago.set_client_status(AP.ClientStatus.CLIENT_GOAL)
+		2:
+			#Gear Hunt
+			if archipelagoGearCount >= slotData["gear_hunt_requirement"]:
+				Archipelago.set_client_status(AP.ClientStatus.CLIENT_GOAL)
 
 func ClearGameData():
 	super()
+	slotData = {}
+	archipelagoStageAccess = [false, true, false, false, false, false, false, false,
+							  false, false, false, false, false, false, false, false, 
+							  false, false, false, false, false, false, false, false, 
+							  false, false, false, false, false, false, false, false, 
+							  false, false]
+	archipelagoWorldAccess = [true, false, false, false, false, false, false]
+	checkedLocations = []
+	archipelagoGearCount = 0
+	archipelagoShackleCount = 0
+	archipelagoCompletedLevels = []
+	archipelagoChronoGear = false
+	archipelagoThreadCounts = {
+		"time": [0, 0, 0], 
+		"space": [0, 0], 
+		"nature": [0], 
+		"civilization": [0], 
+		"chaos": [0], 
+	}
+	archipelagoShopPurchases = {
+		"time": [0, 0, 0], 
+		"space": [0, 0], 
+		"nature": [0], 
+		"civilization": [0], 
+		"chaos": [0], 
+	}
+	archipelagoItemsPurchased = {
+	"time": [
+				[false, false, false, false, false],
+				[false, false, false, false, false], 
+				[false, false, false, false, false, false, false, false, false, false, false, false, false],
+			],
+	"space": [
+			[false, false, false, false], 
+			[false, false, false, false]
+			],
+	"nature":
+			[[false, false, false, false]],
+	"civilization":
+			[[false, false, false, false, false, false, false]],
+	"chaos": 
+			[[false, false, false, false, false, false, false, false, false]]
+	}
+	startingCDsSent = false
+	collectedCDs = []
+	collectedThreads = []
 	if (archipelagoEnabled):
 		#Change this to starting hub
 		currentMap = "res://Maps/hub_sanctum.tscn"
 		previousMap = "res://Maps/hub_sanctum.tscn"
+		
+
+func PackArchipelagoData():
+	var archipelagoData: Dictionary = {
+		"stageAccess": archipelagoStageAccess,
+		"worldAccess": archipelagoWorldAccess,
+		"checkedLocations": checkedLocations,
+		"gearCount": archipelagoGearCount,
+		"shackleCount": archipelagoShackleCount,
+		"completedLevels": archipelagoCompletedLevels,
+		"stsReceived": archipelagoStSReceived,
+		"zstmReceived": archipelagoZStMReceived,
+		"chronoGear": archipelagoChronoGear,
+		"threadCounts": archipelagoThreadCounts,
+		"shopPurchases": archipelagoShopPurchases,
+		"itemPurchases": archipelagoItemsPurchased,
+		"shopItems": archipelagoShopItems,
+		"startingCDsSent": startingCDsSent,
+		"collectedCDs": collectedCDs,
+		"collectedThreads": collectedThreads,
+		"receivedItems": Archipelago.conn.received_items
+	}
+	
+	return archipelagoData
+
+func UnpackArchipelagoData(data: Dictionary):
+	archipelagoStageAccess = data["stageAccess"]
+	archipelagoWorldAccess = data["worldAccess"]
+	checkedLocations = data["checkedLocations"]
+	archipelagoGearCount = data["gearCount"]
+	archipelagoShackleCount = data["shackleCount"]
+	archipelagoCompletedLevels = data["completedLevels"]
+	archipelagoStSReceived = data["stsReceived"]
+	archipelagoZStMReceived = data["zstmReceived"]
+	archipelagoChronoGear = data["chronoGear"]
+	archipelagoThreadCounts = data["threadCounts"]
+	archipelagoShopPurchases = data["shopPurchases"]
+	archipelagoItemsPurchased = data["itemPurchases"]
+	archipelagoShopItems = data["shopItems"]
+	startingCDsSent = data["startingCDsSent"]
+	collectedCDs = data["collectedCDs"]
+	collectedThreads = data["collectedThreads"]
+	receivedItems = data["receivedItems"]
