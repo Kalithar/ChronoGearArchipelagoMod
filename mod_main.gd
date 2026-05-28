@@ -39,9 +39,10 @@ func install_script_extensions() -> void:
 	# ! Add extensions (longform version of the above)
 	ModLoaderMod.install_script_extension(extensions_dir_path.path_join("Global Assets/Scripts/Gameplay/GameSettings.gd"))
 	ModLoaderMod.install_script_extension(extensions_dir_path.path_join("Global Assets/Scripts/Items/GoldenGear.gd"))
-	ModLoaderMod.install_script_extension(extensions_dir_path.path_join("Global Assets/Scripts/UI/MenuResults.gd"))
 	ModLoaderMod.install_script_extension(extensions_dir_path.path_join("Global Assets/Scripts/Enemies/BossGandr.gd"))
+	ModLoaderMod.install_script_extension(extensions_dir_path.path_join("Global Assets/Scripts/Gameplay/PlayerStart.gd"))
 	#ModLoaderMod.install_script_extension(extensions_dir_path.path_join("Global Assets/Scripts/UI/MenuFileSelect.gd")) Nope, not this one, FileSelectMenu
+	ModLoaderMod.install_script_extension(extensions_dir_path.path_join("Global Assets/Scripts/Objects/StageSelectPortal.gd"))
 
 
 func install_script_hook_files() -> void:
@@ -58,6 +59,8 @@ func install_script_hook_files() -> void:
 	ModLoaderMod.install_script_hooks("res://Global Assets/Scripts/UI/MenuWorldSelect.gd", extensions_dir_path.path_join("Global Assets/Scripts/UI/MenuWorldSelect.hooks.gd"))
 	ModLoaderMod.install_script_hooks("res://Menu Assets/Title/FileSelectPanel.gd", extensions_dir_path.path_join("Menu Assets/Title/FileSelectPanel.hooks.gd"))
 	ModLoaderMod.install_script_hooks("res://Menu Assets/Scenes/menu_threads.gd", extensions_dir_path.path_join("Menu Assets/Scenes/menu_threads.hooks.gd"))
+	ModLoaderMod.install_script_hooks("res://Global Assets/Scripts/UI/MenuResults.gd", extensions_dir_path.path_join("Global Assets/Scripts/UI/MenuResults.hooks.gd"))
+	ModLoaderMod.install_script_hooks("res://Global Assets/Scripts/Enemies/BossGandr.gd", extensions_dir_path.path_join("Global Assets/Scripts/Enemies/BossGandr.hooks.gd"))
 
 func add_translations() -> void:
 	# ! Place all of your translation files into this directory
@@ -76,4 +79,4 @@ func _ready() -> void:
 
 	# ! This uses Godot's native `tr` func, which translates a string. You'll
 	# ! find this particular string in the example CSV here: translations/modname.csv
-	ModLoaderLog.info("Translation Demo: " + tr("MODNAME_READY_TEXT"), LOG_NAME)
+	#ModLoaderLog.info("Translation Demo: " + tr("MODNAME_READY_TEXT"), LOG_NAME)

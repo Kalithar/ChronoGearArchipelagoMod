@@ -2,12 +2,12 @@ extends Object
 
 func State_FinishScene(chain: ModLoaderHookChain, delta):
 	var cutscene = chain.reference_object as CutsceneController
-	if cutscene.changeSceneSafe:
+	#if cutscene.changeSceneSafe:
 		#A bunch of stuff to say "if it's trying to send you somewhere that isn't unlocked, you get sent to sanctum instead"
-		for i in range(1, 62):
-			if cutscene.changeSceneSafe == GameSettings.GetStageInfo(i):
-				if GameSettings.storyFlag[GameSettings.GetStageInfo(i)[5]] != 1:
-					cutscene.changeSceneSafe = "hub_sanctum"
+		#for i in range(1, 62):
+			#if cutscene.changeSceneSafe == GameSettings.GetStageInfo(i)[1]:
+				#if GameSettings.storyFlag[GameSettings.GetStageInfo(i)[5]] != 1:
+					#cutscene.changeSceneSafe = "hub_sanctum"
 	chain.execute_next([delta])
 	#Cutscenes that send you back to the hub don't change the pointer to what gear you are currently on,
 	#but I use that for location IDs, so doing that manually

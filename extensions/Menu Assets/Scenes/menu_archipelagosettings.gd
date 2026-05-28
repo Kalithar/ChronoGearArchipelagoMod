@@ -4,8 +4,14 @@ extends GameMenu
 var connectionInProgress: bool = false
 
 func _ready() -> void:
-	%ServerAddressBox.text = ""
-	%SlotNameBox.text = ""
+	if Archipelago.status == Archipelago.APStatus.PLAYING or Archipelago.status == Archipelago.APStatus.CONNECTED:
+		%ServerAddressBox.text = Archipelago.creds.ip + ":" + Archipelago.creds.port
+		%SlotNameBox.text = Archipelago.creds.slot
+		%ConnectButton.visible = false
+		%Disconnect.visible = true
+	else:
+		%ServerAddressBox.text = ""
+		%SlotNameBox.text = ""
 	%PasswordBox.text = ""
 	Archipelago.connect_step.connect(UpdateConnectionStatus)
 	Archipelago.connectionrefused.connect(OnConnectRefused)
@@ -212,6 +218,10 @@ func ConnectToArchipelago() -> void :
 	
 	connectionInProgress = true
 	Archipelago.ap_connect(connectionString[0], connectionString[1], %SlotNameBox.text, %PasswordBox.text)
+	
+	for i in description_tree_children:
+		i.visible = false
+	%ConnectionInfo.visible = true
 
 func DisconnectFromArchipelago() -> void :
 	connectionInProgress = true
@@ -239,7 +249,7 @@ func OnConnect(conn: ConnectionInfo, json: Dictionary):
 	#Server handles all duplicates, don't need to worry here
 	var locationsToSend: Array[int]
 	for i in GameSettings.checkedLocations:
-		locationsToSend.append(i)
+		locationsToSend.append(int(i))
 	Archipelago.collect_locations(locationsToSend)
 	GameSettings.slotData = conn.slot_data
 	
@@ -247,8 +257,6 @@ func OnConnectRefused(conn: ConnectionInfo, json: Dictionary):
 	connectionInProgress = false
 
 func OnRoomInfo(conn: ConnectionInfo, json: Dictionary):
-	Archipelago.conn.received_items = GameSettings.receivedItems
-	Archipelago.conn.obtained_item.connect(GameSettings.ReceiveServerItem)
 	Archipelago.conn.refresh_items.connect(GameSettings.RefreshItems)
 
 func OnDisconnect():

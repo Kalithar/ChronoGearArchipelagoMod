@@ -28,10 +28,10 @@ func FindMissions(chain: ModLoaderHookChain, stageName: String):
 
 					r += 1
 
-func SelectWorld(chain: ModLoaderHookChain, world: int) -> void :
+func Select_World(chain: ModLoaderHookChain, world: int) -> void :
 	var ref = chain.reference_object
 	
-	if (ref.world == 2 or ref.world == 3) and GameSettings.GetStoryFlag("intermission") < 4:
+	if (world == 2 or world == 3) and GameSettings.GetStoryFlag("intermission") < 4:
 		GameSettings.UpdateStoryFlag("intermission", 4)
 	
 	chain.execute_next([world])
