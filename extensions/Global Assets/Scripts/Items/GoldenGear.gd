@@ -7,6 +7,7 @@ func _on_sensor_body_entered(body):
 		if state == State_Default and not targetPlayer:
 			if body.has_method("Action_Victory"):
 				GameSettings.CheckLocation(GameSettings.GetStageInfo(goldenGearID)[9] + 100)
+				GameSettings.MarkLevelCompletion(goldenGearID)
 				GameSettings.UnlockCodec(codecID, false)
 				GameSettings.currentGoldenGear = goldenGearID
 				body.call("Action_Victory", true)

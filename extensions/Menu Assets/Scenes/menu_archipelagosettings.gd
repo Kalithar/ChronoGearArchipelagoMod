@@ -242,7 +242,7 @@ func OnConnect(conn: ConnectionInfo, json: Dictionary):
 	#Every shop location needs to be scouted
 	for i in [1000, 1001, 1002, 1003, 1004, 1100, 1101, 1102, 1103, 1104, 1200, 1201, 1202, 1203, 1204, 1205, 1206, 1207, 1208, 1209, 1210, 1211, 1212,
 			  2000, 2001, 2002, 2003, 3000, 3001, 3002, 3003, 3100, 3101, 3102, 3103, 4000, 4001, 4002, 4003, 4004, 4005, 4006, 
-			  5000, 5001, 5002, 5003, 5004, 5006, 5006, 5007, 5008]:
+			  5000, 5001, 5002, 5003, 5004, 5005, 5006, 5007, 5008]:
 		Archipelago.conn.scout(i, 0, GameSettings.StoreShopItem)
 	
 	#Send archipelago the list of collected items in case anything was collected while disconnected

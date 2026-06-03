@@ -46,6 +46,7 @@ func purchase(chain: ModLoaderHookChain) -> void:
 		GameSettings.CheckShopLocation(ref.shop, ref.page, ref.current_thread.get_index())
 		
 		ref.current_thread.unlocked = true
+		GameSettings.archipelagoItemsPurchased[ref.shop][ref.page][ref.current_thread] = true
 		ref.find_child("ThreadCount").text = str(int(GameSettings.ArchipelagoThreadsAvailable(ref.shop, ref.page)))
 		FileManager.SaveGame()
 
