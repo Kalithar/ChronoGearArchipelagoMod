@@ -736,6 +736,28 @@ func CheckGoalCondition():
 			if archipelagoGearCount >= slotData["gear_hunt_requirement"]:
 				Archipelago.set_client_status(AP.ClientStatus.CLIENT_GOAL)
 
+#Method to convert the string that the I get from the save file
+#back into a network item, because there's no better way to do this
+func ConvertItemStringToItem(itemString: String):
+	"ITEM(%d at %d,player %d->%d,flags %d)"
+	var info = itemString.split("(")[1].split(",")
+	var ids = info[0]
+	var players = info[1]
+	var flags = info[2]
+	
+	ids = ids.split(" at ")
+	players = players.split(" ")[1].split("->")
+	flags = flags.split(" ")[1].split(")")[0]
+	
+	var item = NetworkItem.new()
+	item.id = ids[0] as int
+	item.loc_id = ids[1] as int
+	item.src_player_id = players[0] as int
+	item.dest_player_id = players[1] as int
+	item.flags = flags as int
+	
+	return item
+
 func ClearGameData():
 	super()
 	slotData = {}
@@ -827,6 +849,10 @@ func UnpackArchipelagoData(data: Dictionary):
 	archipelagoShopPurchases = data["shopPurchases"]
 	archipelagoItemsPurchased = data["itemPurchases"]
 	archipelagoShopItems = data["shopItems"]
+	var intDictionary: Dictionary = {}
+	for key in archipelagoShopItems.keys():
+		intDictionary[int(key)] = ConvertItemStringToItem(archipelagoShopItems[key])
+	archipelagoShopItems = intDictionary
 	startingCDsSent = data["startingCDsSent"]
 	collectedCDs.assign(data["collectedCDs"])
 	collectedThreads.assign(data["collectedThreads"])

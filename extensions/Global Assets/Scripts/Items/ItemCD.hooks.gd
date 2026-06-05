@@ -8,7 +8,8 @@ func _ready(chain: ModLoaderHookChain):
 		var despawnIfUnlocked = reference.despawnIfUnlocked
 		reference.despawnIfUnlocked = false
 		chain.execute_next()
-		if despawnIfUnlocked and GameSettings.collectedCDs.has(reference.cd_id):
+		var cdID = int(reference.cd_id.split("_")[1])
+		if despawnIfUnlocked and GameSettings.collectedCDs.has(cdID):
 			reference.queue_free()
 
 func UnlockItem(chain: ModLoaderHookChain) -> void :
@@ -20,4 +21,4 @@ func UnlockItem(chain: ModLoaderHookChain) -> void :
 		var cdID = int(collectedCD.cd_id.split("_")[1])
 		GameSettings.CheckLocation(GameSettings.GetStageInfo(GameSettings.currentGoldenGear)[9] + 200 + cdID)
 		
-		GameSettings.collectedCDs.append(collectedCD.cd_id)
+		GameSettings.collectedCDs.append(collectedCD.cdID)

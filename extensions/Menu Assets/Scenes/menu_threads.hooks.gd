@@ -46,7 +46,7 @@ func purchase(chain: ModLoaderHookChain) -> void:
 		GameSettings.CheckShopLocation(ref.shop, ref.page, ref.current_thread.get_index())
 		
 		ref.current_thread.unlocked = true
-		GameSettings.archipelagoItemsPurchased[ref.shop][ref.page][ref.current_thread] = true
+		GameSettings.archipelagoItemsPurchased[ref.shop][ref.page][ref.current_thread.get_index()] = true
 		ref.find_child("ThreadCount").text = str(int(GameSettings.ArchipelagoThreadsAvailable(ref.shop, ref.page)))
 		FileManager.SaveGame()
 
@@ -111,7 +111,7 @@ func update_side_panel(chain: ModLoaderHookChain) -> void:
 		var ref = chain.reference_object
 		match ref.current_thread.unlock_type:
 			ref.MUSIC, ref.BORDER_ART:
-				var shopLocation
+				var shopLocation: int
 				match ref.shop:
 					"time":
 						shopLocation = 1000 + 100 * ref.page + ref.current_thread.get_index()
