@@ -21,4 +21,4 @@ func UnlockItem(chain: ModLoaderHookChain) -> void :
 		var cdID = int(collectedCD.cd_id.split("_")[1])
 		GameSettings.CheckLocation(GameSettings.GetStageInfo(GameSettings.currentGoldenGear)[9] + 200 + cdID)
 		
-		GameSettings.collectedCDs.append(collectedCD.cdID)
+		GameSettings.collectedCDs.append(cdID)

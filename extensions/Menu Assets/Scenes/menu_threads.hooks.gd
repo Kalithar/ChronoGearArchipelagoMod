@@ -126,9 +126,9 @@ func update_side_panel(chain: ModLoaderHookChain) -> void:
 				var shopItem = GameSettings.archipelagoShopItems[shopLocation]
 				ref.find_child("Music").show()
 				var musicName = ref.find_child("MusicName")
-				musicName.text = shopItem.get_name()
-				ref.find_child("ArtistLabel").text = "For: " + Archipelago.conn.get_player_name(shopItem.dest_player_id)
-				ref.find_child("OriginalLabel").text = shopItem.get_classification()
+				musicName.text = shopItem["name"]
+				ref.find_child("ArtistLabel").text = "For: " + shopItem["owner"]
+				ref.find_child("OriginalLabel").text = shopItem["classification"]
 				
 				ref.find_child("ThreadPrice").text = str(ref.current_thread.price)
 				ref.reset_pan()
