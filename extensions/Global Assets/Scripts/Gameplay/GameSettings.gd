@@ -205,12 +205,12 @@ func GetStageInfo(a: int):
 			49: return ["level_tower2", tr("The Final Ascent"), 150, MinutesToMilliseconds(40), 400, "archipelago_tower2", 1, 49, 57, 630000]
 			50: return ["level_tower2_boss", tr("Steel on Steel"), 0, MinutesToMilliseconds(8), 200, "archipelago_tower2_boss", 1, 50, 58, 631000]
 			51: return ["level_sanctum2", tr("Defending the Sanctum"), 100, MinutesToMilliseconds(6), 200, "archipelago_sanctum2", 1, 51, 48, 112000]
-			52: return ["hub_sanctum", tr("The Council Meeting"), 0, MinutesToMilliseconds(5), 100, "", 0, 52, 11, 100000]
-			53: return ["hub_starship", tr("Timeless Weapon"), 0, MinutesToMilliseconds(5), 100, "", 0, 53, 29, 300000]
-			54: return ["hub_garden", tr("The Golden Scales"), 0, MinutesToMilliseconds(5), 100, "", 0, 54, 22, 200000]
-			55: return ["hub_city", "", 0, MinutesToMilliseconds(5), 100, "", 0, 55, 46, 500000]
-			56: return ["hub_civ", tr("A Clean Slate"), 0, MinutesToMilliseconds(5), 100, "", 0, 56, 39, 400000]
-			57: return ["hub_camp", "", 0, MinutesToMilliseconds(5), 100, "", 0, 57, 59, 700000]
+			52: return ["hub_sanctum", tr("The Council Meeting"), 0, MinutesToMilliseconds(5), 100, "archipelago_hub_sanctum", 0, 52, 11, 100000]
+			53: return ["hub_starship", tr("Timeless Weapon"), 0, MinutesToMilliseconds(5), 100, "archipelago_hub_starship", 0, 53, 29, 300000]
+			54: return ["hub_garden", tr("The Golden Scales"), 0, MinutesToMilliseconds(5), 100, "archipelago_hub_garden", 0, 54, 22, 200000]
+			55: return ["hub_city", "", 0, MinutesToMilliseconds(5), 100, "archipelago_hub_city", 0, 55, 46, 500000]
+			56: return ["hub_civ", tr("A Clean Slate"), 0, MinutesToMilliseconds(5), 100, "archipelago_hub_civ", 0, 56, 39, 400000]
+			57: return ["hub_camp", "", 0, MinutesToMilliseconds(5), 100, "archipelago_hub_camp", 0, 57, 59, 700000]
 			58: return ["level_belltown_alt_boss", tr("The Ancient Ones"), 0, MinutesToMilliseconds(3), 100, "archipelago_belltown_alt_boss", 1, 58, 51, 711000]
 			59: return ["level_stadium_alt_boss", tr("The Way Home"), 0, MinutesToMilliseconds(6), 150, "archipelago_stadium_alt_boss", 1, 59, 55, 751000]
 			60: return ["hub_sanctum", tr("The Secret Sanctum"), 0, MinutesToMilliseconds(5), 100, "endingB", 2, 60, 60, 101000]
@@ -218,12 +218,35 @@ func GetStageInfo(a: int):
 
 	return ["", "Invalid Gear", 100, MinutesToMilliseconds(5), 100, "", 0, 0, 0, 999000]
 
+func GetHubAccess(a: String):
+	var destination: String = a
+	
+	if destination == "level_stadium_boss2":
+		if IsMissionAccessible(41):
+			return destination
+		else:
+			return "hub_sanctum"
 
-func UpdateStoryFlag(flagName: String, flagValue: int):
+	for i in range(1, 62):
+		if GetStageInfo(i)[0] == destination:
+			if IsMissionAccessible(i):
+				return destination
+			else:
+				return "hub_sanctum"
+	
+	return destination
+	
+func UpdateStoryFlag(flagName: String, flagValue: int, override: int = 0):
 	if archipelagoEnabled:
 		if not storyFlag.keys().has(flagName):
 			storyFlag[flagName] = 0
+		if not override == 0 and flagName == "fishing" and flagValue == 1:
+			UpdateSideQuest()
+			return
 	super(flagName, flagValue)
+
+func UpdateSideQuest():
+	UpdateStoryFlag("fishing", 1, 1)
 
 #You will be my nemesis in time.
 #also this is where golden gear count is incremented
@@ -523,7 +546,7 @@ func UnlockStage(id: int):
 		57: archipelagoStageAccess[27] = true
 		58: archipelagoStageAccess[26] = true
 		59: archipelagoStageAccess[31] = true
-		61:	archipelagoStageAccess[33] = true
+		61: archipelagoStageAccess[33] = true
 
 #Maps levels to the world they're in, to be called in automatic world unlock mode
 func UnlockWorld(id: int):
@@ -542,6 +565,45 @@ func UnlockWorld(id: int):
 			archipelagoWorldAccess[5] = true #Darkness
 		43, 44, 45, 46, 47, 57, 58, 59:
 			archipelagoWorldAccess[6] = true #Alter
+
+#Checks to see if a level of the given ID has both the story flag and world set correctly
+func IsMissionAccessible(id: int):
+	match id:
+		1, 2, 4, 5, 7, 9, 39, 51, 52:
+			if storyFlag.keys().has(GetStageInfo(id)[5]):
+				return storyFlag[GetStageInfo(id)[5]] == 1 and archipelagoWorldAccess[0] == true #Time
+			else:
+				return false
+		11, 12, 14, 15, 17, 18, 19, 54:
+			if storyFlag.keys().has(GetStageInfo(id)[5]):
+				return storyFlag[GetStageInfo(id)[5]] == 1 and archipelagoWorldAccess[1] == true #Nature
+			else:
+				return false
+		21, 23, 24, 26, 53:
+			if storyFlag.keys().has(GetStageInfo(id)[5]):
+				return storyFlag[GetStageInfo(id)[5]] == 1 and archipelagoWorldAccess[4] == true #Space
+			else:
+				return false
+		27, 28, 29, 31, 33, 56:
+			if storyFlag.keys().has(GetStageInfo(id)[5]):
+				return storyFlag[GetStageInfo(id)[5]] == 1 and archipelagoWorldAccess[2] == true #Civ
+			else:
+				return false
+		35, 36, 38, 40, 41, 55:
+			if storyFlag.keys().has(GetStageInfo(id)[5]):
+				return storyFlag[GetStageInfo(id)[5]] == 1 and archipelagoWorldAccess[3] == true #Chaos
+			else:
+				return false
+		42, 48, 49, 50, 61:
+			if storyFlag.keys().has(GetStageInfo(id)[5]):
+				return storyFlag[GetStageInfo(id)[5]] == 1 and archipelagoWorldAccess[5] == true #Darkness
+			else:
+				return false
+		43, 44, 45, 46, 47, 57, 58, 59:
+			if storyFlag.keys().has(GetStageInfo(id)[5]):
+				return storyFlag[GetStageInfo(id)[5]] == 1 and archipelagoWorldAccess[6] == true #Alter
+			else:
+				return false
 
 #Extra logic handling for Steel on Steel and Zero Seconds to Midnight,
 #which both require having some number of shackles to unlock

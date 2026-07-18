@@ -6,5 +6,6 @@ func _process(chain: ModLoaderHookChain, delta):
 		GameSettings.CheckLocation(751400) #Hard coded chrono gear ID
 		if not GameSettings.archipelagoChronoGear:
 			ref.targetPlayer.hasChronoGear = false
+			ref.targetPlayer.powerC = false
 	chain.execute_next([delta])
 	
