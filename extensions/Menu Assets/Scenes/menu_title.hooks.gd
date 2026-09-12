@@ -25,4 +25,4 @@ func _ready(chain: ModLoaderHookChain) -> void :
 func SetEnabled(chain: ModLoaderHookChain, state: bool, _option_focus: int = 0, fade: bool = false, delay: bool = true) -> void :
 	apLabel.visible = GameSettings.archipelagoEnabled
 	
-	chain.execute_next([state, _option_focus, fade, delay])
+	chain.execute_next_async([state, _option_focus, fade, delay])

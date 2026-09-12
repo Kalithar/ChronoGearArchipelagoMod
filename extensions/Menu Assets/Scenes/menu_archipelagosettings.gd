@@ -263,5 +263,3 @@ func OnDisconnect():
 	connectionInProgress = false
 	%ConnectButton.visible = true
 	%Disconnect.visible = false
-
-#I deleted a thing I shouldn't have, the bit that changes the description to show the %ConnectionInfo is gone
