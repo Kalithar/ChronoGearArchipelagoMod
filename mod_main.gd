@@ -43,6 +43,11 @@ func install_script_extensions() -> void:
 	ModLoaderMod.install_script_extension(extensions_dir_path.path_join("Global Assets/Scripts/Gameplay/PlayerStart.gd"))
 	#ModLoaderMod.install_script_extension(extensions_dir_path.path_join("Global Assets/Scripts/UI/MenuFileSelect.gd")) Nope, not this one, FileSelectMenu
 	ModLoaderMod.install_script_extension(extensions_dir_path.path_join("Global Assets/Scripts/Objects/StageSelectPortal.gd"))
+	ModLoaderMod.install_script_extension(extensions_dir_path.path_join("Global Assets/Scripts/Items/ItemLoot.gd"))
+	ModLoaderMod.install_script_extension(extensions_dir_path.path_join("Global Assets/Scripts/Items/ItemChest.gd"))
+	ModLoaderMod.install_script_extension(extensions_dir_path.path_join("Global Assets/Scripts/Objects/TimeSwitch.gd"))
+	ModLoaderMod.install_script_extension(extensions_dir_path.path_join("Global Assets/Scripts/Objects/TimeTravel.gd"))
+	ModLoaderMod.install_script_extension(extensions_dir_path.path_join("Global Assets/Scripts/UI/DoorFlagCounter.gd"))
 
 
 func install_script_hook_files() -> void:
@@ -61,7 +66,8 @@ func install_script_hook_files() -> void:
 	ModLoaderMod.install_script_hooks("res://Menu Assets/Scenes/menu_threads.gd", extensions_dir_path.path_join("Menu Assets/Scenes/menu_threads.hooks.gd"))
 	ModLoaderMod.install_script_hooks("res://Global Assets/Scripts/UI/MenuResults.gd", extensions_dir_path.path_join("Global Assets/Scripts/UI/MenuResults.hooks.gd"))
 	ModLoaderMod.install_script_hooks("res://Global Assets/Scripts/Enemies/BossGandr.gd", extensions_dir_path.path_join("Global Assets/Scripts/Enemies/BossGandr.hooks.gd"))
-	ModLoaderMod.install_script_hooks("res://Global Assets/Scripts/Items/ItemHealth.gd", extensions_dir_path.path_join("Global Assets/Scripts/Items/ItemHealth.hooks.gd"))
+	#ModLoaderMod.install_script_hooks("res://Global Assets/Scripts/Items/ItemHealth.gd", extensions_dir_path.path_join("Global Assets/Scripts/Items/ItemHealth.hooks.gd"))
+	ModLoaderMod.install_script_hooks("res://Global Assets/Scripts/Enemies/BossSnake.gd", extensions_dir_path.path_join("Global Assets/Scripts/Enemies/BossSnake.hooks.gd"))
 
 func add_translations() -> void:
 	# ! Place all of your translation files into this directory

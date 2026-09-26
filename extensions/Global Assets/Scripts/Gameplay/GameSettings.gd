@@ -90,6 +90,23 @@ var startingCDsSent: bool = false
 var collectedCDs: Array[int]
 var collectedThreads: Array[int]
 
+#Markers for how many of each level collectible have been sent, received, and in the case of keys, used
+var sentAcornLocations: Array[bool] = [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false]
+var receivedAcorns: int = 0
+
+var sentMazePartLocations: Array[bool] = [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false]
+var receivedMazeParts: int = 0
+
+var sentTowerKeyLocations: Array[bool] = [false, false, false]
+var receivedTowerKeys: int = 0
+var usedTowerKeys: int = 0
+var openedTowerLocks: Array[bool] = [false, false, false]
+
+#Markers for the four sidequests
+var anyaCutsceneAvailable: bool = false
+var koboCutsceneAvailable: bool = false
+var robocoCutsceneAvailable: bool = false
+
 #The index of the most recently received item. Stored for correct item/message handling when Refreshing
 var lastReceivedIndex: int = 0
 
@@ -204,7 +221,7 @@ func GetStageInfo(a: int):
 			46: return ["level_castleroad_alt", tr("Despair"), 100, MinutesToMilliseconds(10), 250, "archipelago_castleroad_alt", 1, 46, 53, 740000, [], []]
 			47: return ["level_stadium_alt", tr("Hope"), 0, MinutesToMilliseconds(8), 150, "archipelago_stadium_alt", 1, 47, 54, 750000, [], []]
 			48: return ["level_tower1", tr("Her Time is Now"), 100, MinutesToMilliseconds(8), 150, "archipelago_tower1", 1, 48, 56, 620000, [620275], [620322, 620323, 620324, 620321]]
-			49: return ["level_tower2", tr("The Final Ascent"), 150, MinutesToMilliseconds(40), 400, "archipelago_tower2", 1, 49, 57, 630000, [630276, 630277, 630278, 630279, 630290, 630281]]
+			49: return ["level_tower2", tr("The Final Ascent"), 150, MinutesToMilliseconds(40), 400, "archipelago_tower2", 1, 49, 57, 630000, [630276, 630277, 630278, 630279, 630290, 630281], []]
 			50: return ["level_tower2_boss", tr("Steel on Steel"), 0, MinutesToMilliseconds(8), 200, "archipelago_tower2_boss", 1, 50, 58, 631000, [], []]
 			51: return ["level_sanctum2", tr("Defending the Sanctum"), 100, MinutesToMilliseconds(6), 200, "archipelago_sanctum2", 1, 51, 48, 112000, [112263], [112328, 112341]]
 			52: return ["hub_sanctum", tr("The Council Meeting"), 0, MinutesToMilliseconds(5), 100, "archipelago_hub_sanctum", 0, 52, 11, 100000, [100286, 100282, 100288, 100283, 100284], [100301, 100331]]
@@ -217,26 +234,29 @@ func GetStageInfo(a: int):
 			59: return ["level_stadium_alt_boss", tr("The Way Home"), 0, MinutesToMilliseconds(6), 150, "archipelago_stadium_alt_boss", 1, 59, 55, 751000, [], []]
 			60: return ["hub_sanctum", tr("The Secret Sanctum"), 0, MinutesToMilliseconds(5), 100, "endingB", 2, 60, 60, 101000, [100286, 100282, 100288, 100283, 100284], [100301, 100331]]
 			61: return ["level_tower2_boss2", tr("Zero Seconds To Midnight"), 0, MinutesToMilliseconds(7), 150, "archipelago_final", 1, 61, 61, 632000, [], []]
-
+			62: return ["hub_city", tr("It\'s a Secret to Everybody"), 0, MinutesToMilliseconds(5), 100, "archipelago_hub_city", 0, 62, 62, 500000, [500257], []]
+			
 	return ["", "Invalid Gear", 100, MinutesToMilliseconds(5), 100, "", 0, 0, 0, 999000]
 
 func GetHubAccess(a: String):
-	var destination: String = a
-	
-	if destination == "level_stadium_boss2":
-		if IsMissionAccessible(41):
-			return destination
-		else:
-			return "hub_sanctum"
-
-	for i in range(1, 62):
-		if GetStageInfo(i)[0] == destination:
-			if IsMissionAccessible(i):
+	if archipelagoEnabled:
+		var destination: String = a
+		
+		if destination == "level_stadium_boss2":
+			if IsMissionAccessible(41):
 				return destination
 			else:
 				return "hub_sanctum"
-	
-	return destination
+
+		for i in range(1, 62):
+			if GetStageInfo(i)[0] == destination:
+				if IsMissionAccessible(i):
+					return destination
+				else:
+					return "hub_sanctum"
+		
+		return destination
+	else: return super(a)
 	
 func UpdateStoryFlag(flagName: String, flagValue: int, override: int = 0):
 	if archipelagoEnabled:
@@ -256,7 +276,6 @@ func UpdateStoryFlags():
 	if (!archipelagoEnabled):
 		super()
 	else:
-		CheckGoalCondition()
 		#I have to copy the entire thing because this is where the starting CDs are, pain
 		CheckStoryFlag(1, "world_time", 1)
 		CheckStoryFlag(4, "world_time", 6)
@@ -347,58 +366,31 @@ func UpdateStoryFlags():
 		if not achievementsUnlocked.has("ach_gear_hunter"):
 			if gears >= 35:
 				UnlockAchievement("ach_gear_hunter")
-		if not achievementsUnlocked.has("ach_just_about_perfect") or not achievementsUnlocked.has("ach_the_clock_runs_fast"):
-			var score: int
-			var time: float
-			for i in GameSettings.goldenGears.size():
-				if GameSettings.goldenGears[i] == true:
-					score += GameSettings.scoreRecord[i]
-					time += GameSettings.timeRecord[i]
+		var needs_score_total: bool = not achievementsUnlocked.has("ach_just_about_perfect")
+		var needs_speed_time: bool = ( not achievementsUnlocked.has("ach_the_clock_runs_fast")) and gears >= 35
+		if needs_score_total or needs_speed_time:
+			var score: int = 0
+			var time: float = 0.0
+			for i in goldenGears.size():
+				if goldenGears[i]:
+					if needs_score_total:
+						score += scoreRecord[i]
+					if needs_speed_time:
+						time += timeRecord[i]
 
-			if score >= 14000:
+			if needs_score_total and score >= 14000:
 				UnlockAchievement("ach_just_about_perfect")
-			if gears >= 35 and time < MinutesToMilliseconds(180):
+			if needs_speed_time and time < MinutesToMilliseconds(180):
 				UnlockAchievement("ach_the_clock_runs_fast")
+
+		FileManager.EndSaveGameBatch()
 
 #If the server sends a fresh item list, need to replace all current items with the sent list
 func RefreshItems(items: Array[NetworkItem]):
-	archipelagoStageAccess = [false, true, false, false, false, false, false, false,
-							  false, false, false, false, false, false, false, false, 
-							  false, false, false, false, false, false, false, false, 
-							  false, false, false, false, false, false, false, false, 
-							  false, false]
-	archipelagoWorldAccess = [true, false, false, false, false, false, false]
-	archipelagoGearCount = 0
-	archipelagoShackleCount = 0
-	archipelagoChronoGear = false
-	archipelagoStSReceived = false
-	archipelagoZStMReceived = false
-	archipelagoThreadCounts = {
-		"time": [0, 0, 0], 
-		"space": [0, 0], 
-		"nature": [0], 
-		"civilization": [0], 
-		"chaos": [0], 
-	}
-	archipelagoItemsPurchased = {
-		"time": [
-				[false, false, false, false, false],
-				[false, false, false, false, false], 
-				[false, false, false, false, false, false, false, false, false, false, false, false, false],
-			],
-		"space": [
-			[false, false, false, false], 
-			[false, false, false, false]
-			],
-		"nature":
-			[[false, false, false, false]],
-		"civilization":
-			[[false, false, false, false, false, false, false]],
-		"chaos": 
-			[[false, false, false, false, false, false, false, false, false]]
-	}
+	ClearArchipelagoItems()
 	storyFlag["ending"] = 0
 	storyFlag["endingB"] = 0
+	storyFlag["fishing"] = 0
 	for i in range(62):
 		if GetStageInfo(i)[5] != "" and storyFlag.keys().has(GetStageInfo(i)[5]):
 			storyFlag[GetStageInfo(i)[5]] = 0
@@ -469,7 +461,6 @@ func ReceiveItem(id: int):
 		match ((id % 1000) / 100) as int:
 			0: 
 				archipelagoGearCount += 1
-				CheckGoalCondition()
 			1: 
 				archipelagoShackleCount += 1
 				CheckTower2Unlocks(50) #Steel on Steel
@@ -498,6 +489,52 @@ func ReceiveItem(id: int):
 						#For now, this is just the chrono gear. I'll be adding other abilities later
 			5: #Border arts
 				borderArtUnlocked.append(borderArt.keys()[id % 100])
+			6: #Filler and traps
+				match id % 10:
+					0:
+						#Jade Apple
+						if hud.targetPlayer and is_instance_valid(hud.targetPlayer):
+							hud.targetPlayer.call("Action_Heal", 30)
+						return
+					1: 
+						#Time Power Refill
+						if hud.targetPlayer and is_instance_valid(hud.targetPlayer):
+							hud.targetPlayer.call("Action_RestoreMana", 500)
+						return
+					2:
+						#10 Notes
+						if hud.targetPlayer and is_instance_valid(hud.targetPlayer):
+							var note = preload("res://Global Assets/Scenes/Common/note.tscn")
+							var noteEffect = preload("res://Global Assets/Scenes/Effects/effect_collectnote_cd.tscn")
+							for i in 10:
+								var hi = note.instantiate() as Node2D
+								GameSettings.CurrentScene().call_deferred("add_child", hi)
+								hi.global_position = hud.targetPlayer.global_position
+								var dropAngle: float = (i + 0.5) * (360.0 / 10)
+								if hi.has_method("Drop"):
+									hi.global_position += Vector2(cos(deg_to_rad(dropAngle)) * 1.0, sin(deg_to_rad(dropAngle)) * 1.0)
+									hi.call("Drop", Vector2(cos(deg_to_rad(dropAngle)) * (800 + (i % 2) * 100), sin(deg_to_rad(dropAngle)) * -800 - (i % 2) * 100))
+									hi.call("SetSpawnOnCollect", noteEffect)
+								hi.reset_physics_interpolation()
+							return
+			7: #Level Collectibles
+				match id % 10:
+					0:
+						receivedAcorns += 1
+					1:
+						receivedMazeParts += 1
+					2:
+						receivedTowerKeys += 1
+			8: #Sidequest items
+				match id % 10:
+					0:
+						anyaCutsceneAvailable = true
+					1:
+						UpdateStoryFlag("fishing", 1)
+					2:
+						koboCutsceneAvailable = true
+					3: 
+						robocoCutsceneAvailable = true
 
 #Maps individual levels to the stages they are in	
 func UnlockStage(id: int):
@@ -771,7 +808,7 @@ func MarkLevelCompletion(levelId: int):
 			CheckLocation(GameSettings.GetStageInfo(48)[9]) #Her Time is Now
 			CheckLocation(6) #World of Darkness unlock
 		61: 
-			CheckGoalCondition() #Zero Seconds doesn't do the victory screen, so this does nothing
+			CheckGoalCondition()
 
 func ArchipelagoThreadsAvailable(shop: String = "none", page: int = 0) -> int:
 	if(!archipelagoEnabled or (shop == "none" and page == 0)):
@@ -793,20 +830,16 @@ func CheckGoalCondition():
 	match int(slotData["goal_condition"]):
 		0:
 			#Clear Steel on Steel
-			if archipelagoCompletedLevels.has(50):
+			if archipelagoCompletedLevels.has(50) and archipelagoGearCount >= slotData["gear_hunt_requirement"]:
 				Archipelago.set_client_status(AP.ClientStatus.CLIENT_GOAL)
 		1:
 			#Clear Zero Seconds to Midnight
-			if IsAchievementUnlocked("ach_in_the_end"):
-				Archipelago.set_client_status(AP.ClientStatus.CLIENT_GOAL)
-		2:
-			#Gear Hunt
-			if archipelagoGearCount >= slotData["gear_hunt_requirement"]:
+			#Added a completion check to the boss of ZStM, so this should works now
+			if archipelagoCompletedLevels.has(61) and archipelagoGearCount >= slotData["gear_hunt_requirement"]:
 				Archipelago.set_client_status(AP.ClientStatus.CLIENT_GOAL)
 
-func ClearGameData():
-	super()
-	slotData = {}
+#Clears out all archipelago items, used for clearing game data and refreshing inventory
+func ClearArchipelagoItems():
 	archipelagoStageAccess = [false, true, false, false, false, false, false, false,
 							  false, false, false, false, false, false, false, false, 
 							  false, false, false, false, false, false, false, false, 
@@ -817,6 +850,8 @@ func ClearGameData():
 	archipelagoGearCount = 0
 	archipelagoShackleCount = 0
 	archipelagoCompletedLevels = []
+	archipelagoStSReceived = false
+	archipelagoZStMReceived = false
 	archipelagoChronoGear = false
 	archipelagoThreadCounts = {
 		"time": [0, 0, 0], 
@@ -849,9 +884,27 @@ func ClearGameData():
 	"chaos": 
 			[[false, false, false, false, false, false, false, false, false]]
 	}
+	archipelagoShopItems = {}
 	startingCDsSent = false
 	collectedCDs = []
 	collectedThreads = []
+	sentAcornLocations= [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false]
+	receivedAcorns = 0
+	sentMazePartLocations = [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false]
+	receivedMazeParts = 0
+	sentTowerKeyLocations = [false, false, false]
+	receivedTowerKeys = 0
+	usedTowerKeys = 0
+	openedTowerLocks = [false, false, false]
+	anyaCutsceneAvailable = false
+	koboCutsceneAvailable = false
+	robocoCutsceneAvailable = false
+
+func ClearGameData():
+	super()
+	ClearArchipelagoItems()
+	slotData = {}
+	lastReceivedIndex = 0
 	if (archipelagoEnabled):
 		#Change this to starting hub
 		currentMap = "res://Maps/hub_sanctum.tscn"
@@ -877,9 +930,21 @@ func PackArchipelagoData():
 		"collectedCDs": collectedCDs,
 		"collectedThreads": collectedThreads,
 		"lastReceivedIndex": lastReceivedIndex,
+		"sentAcornLocations": sentAcornLocations,
+		"receivedAcorns": receivedAcorns,
+		"sentMazePartLocations": sentMazePartLocations,
+		"receivedMazeParts": receivedMazeParts,
+		"sentTowerKeyLocations": sentTowerKeyLocations,
+		"receivedTowerKeys": receivedTowerKeys,
+		"usedTowerKeys": usedTowerKeys,
+		"openedTowerLocks": openedTowerLocks,
+		"anyaCutsceneAvailable": anyaCutsceneAvailable,
+		"koboCutsceneAvailable": koboCutsceneAvailable,
+		"robocoCutsceneAvailable": robocoCutsceneAvailable,
 	}
 	
 	return archipelagoData
+
 
 func UnpackArchipelagoData(data: Dictionary):
 	archipelagoStageAccess = data["stageAccess"]
@@ -905,3 +970,14 @@ func UnpackArchipelagoData(data: Dictionary):
 	collectedCDs.assign(data["collectedCDs"])
 	collectedThreads.assign(data["collectedThreads"])
 	lastReceivedIndex = data["lastReceivedIndex"]
+	sentAcornLocations.assign(data["sentAcornLocations"])
+	receivedAcorns = data["receivedAcorns"]
+	sentMazePartLocations.assign(data["sentMazePartLocations"])
+	receivedMazeParts = data["receivedMazeParts"]
+	sentTowerKeyLocations.assign(data["sentTowerKeyLocations"])
+	receivedTowerKeys = data["receivedTowerKeys"]
+	usedTowerKeys = data["usedTowerKeys"]
+	openedTowerLocks.assign(data["openedTowerLocks"])
+	anyaCutsceneAvailable = data["anyaCutsceneAvailable"]
+	koboCutsceneAvailable = data["koboCutsceneAvailable"]
+	robocoCutsceneAvailable = data["robocoCutsceneAvailable"]

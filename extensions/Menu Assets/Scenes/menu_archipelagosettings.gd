@@ -10,8 +10,8 @@ func _ready() -> void:
 		%ConnectButton.visible = false
 		%Disconnect.visible = true
 	else:
-		%ServerAddressBox.text = ""
-		%SlotNameBox.text = ""
+		%ServerAddressBox.text = "archipelago.gg:56204"
+		%SlotNameBox.text = "EtherCG"
 	%PasswordBox.text = ""
 	Archipelago.connect_step.connect(UpdateConnectionStatus)
 	Archipelago.connectionrefused.connect(OnConnectRefused)
@@ -251,7 +251,8 @@ func OnConnect(conn: ConnectionInfo, json: Dictionary):
 	for i in GameSettings.checkedLocations:
 		locationsToSend.append(int(i))
 	Archipelago.collect_locations(locationsToSend)
-	GameSettings.slotData = conn.slot_data
+	GameSettings.slotData.assign(conn.slot_data)
+	return
 	
 func OnConnectRefused(conn: ConnectionInfo, json: Dictionary):
 	connectionInProgress = false
