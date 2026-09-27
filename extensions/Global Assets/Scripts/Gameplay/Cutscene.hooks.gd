@@ -35,7 +35,7 @@ func State_FinishScene(chain: ModLoaderHookChain, delta):
 	if GameSettings.archipelagoEnabled:
 		var destination
 		if cutscene.changeSceneSafe == "targetHub":
-			destination = GameSettings.targetHub.resource_path.get_basename().get_file()
+			destination = GameSettings.targetHub.resource_path.get_file()
 		else:
 			destination = cutscene.changeSceneSafe + ".tscn"
 		match destination:

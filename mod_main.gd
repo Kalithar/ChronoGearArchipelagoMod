@@ -68,6 +68,7 @@ func install_script_hook_files() -> void:
 	ModLoaderMod.install_script_hooks("res://Global Assets/Scripts/Enemies/BossGandr.gd", extensions_dir_path.path_join("Global Assets/Scripts/Enemies/BossGandr.hooks.gd"))
 	#ModLoaderMod.install_script_hooks("res://Global Assets/Scripts/Items/ItemHealth.gd", extensions_dir_path.path_join("Global Assets/Scripts/Items/ItemHealth.hooks.gd"))
 	ModLoaderMod.install_script_hooks("res://Global Assets/Scripts/Enemies/BossSnake.gd", extensions_dir_path.path_join("Global Assets/Scripts/Enemies/BossSnake.hooks.gd"))
+	ModLoaderMod.install_script_hooks("res://Global Assets/Scripts/UI/MenuOptionNew.gd", extensions_dir_path.path_join("Global Assets/Scripts/UI/MenuOptionNew.hooks.gd"))
 
 func add_translations() -> void:
 	# ! Place all of your translation files into this directory

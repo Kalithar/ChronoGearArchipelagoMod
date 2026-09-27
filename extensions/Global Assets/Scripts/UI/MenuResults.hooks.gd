@@ -8,7 +8,7 @@ func _process(chain: ModLoaderHookChain, delta):
 				GameSettings.MarkLevelCompletion(GameSettings.goldenGearAcquired)
 				#This will send checks for levels like the hubs, but they don't have the actual
 				#locations, so it's fine.
-				var stage_info = GameSettings.GetStageInfo(GameSettings.currentGoldenGear)
+				var stage_info = GameSettings.GetStageInfo(GameSettings.goldenGearAcquired)
 				if ref.targetNotes != 0:
 					if GameSettings.currentNotes >= ref.targetNotes:
 						GameSettings.CheckLocation(stage_info[9] + 500)

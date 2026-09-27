@@ -10,8 +10,8 @@ func _ready() -> void:
 		%ConnectButton.visible = false
 		%Disconnect.visible = true
 	else:
-		%ServerAddressBox.text = "archipelago.gg:56204"
-		%SlotNameBox.text = "EtherCG"
+		%ServerAddressBox.text = ""
+		%SlotNameBox.text = ""
 	%PasswordBox.text = ""
 	Archipelago.connect_step.connect(UpdateConnectionStatus)
 	Archipelago.connectionrefused.connect(OnConnectRefused)
