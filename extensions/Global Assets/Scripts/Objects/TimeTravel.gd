@@ -10,3 +10,5 @@ func State_Default(_delta):
 			29:
 				if GameSettings.receivedMazeParts >= 10:
 					Activate()
+	else: 
+		super(_delta)
